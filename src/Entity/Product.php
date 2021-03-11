@@ -26,7 +26,7 @@ class Product
     private string $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text", length=512)
      */
     private string $description;
 
@@ -46,7 +46,7 @@ class Product
     private Collection $productOpinion;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=25)
      */
     private $icon;
 
@@ -55,11 +55,10 @@ class Product
         $this->productOpinion = new ArrayCollection();
     }
 
-    public static function create(Category $category, int $id, string $name, string $description, int $amount, string $icon): self
+    public static function create(Category $category, string $name, string $description, int $amount, string $icon): self
     {
         $obj = new self();
         $obj->category = $category;
-        $obj->id = $id;
         $obj->name = $name;
         $obj->description = $description;
         $obj->amount = $amount;
@@ -68,12 +67,12 @@ class Product
         return $obj;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -85,7 +84,7 @@ class Product
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -97,19 +96,19 @@ class Product
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): Category
     {
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getAmount(): ?int
+    public function getAmount(): int
     {
         return $this->amount;
     }
@@ -129,7 +128,7 @@ class Product
         return $this->productOpinion;
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return $this->icon;
     }

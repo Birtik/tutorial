@@ -19,7 +19,10 @@
     "doctrine/doctrine-migrations-bundle": "^3.0",
     "doctrine/orm": "^2.8",
     "symfony/proxy-manager-bridge": "5.2.*",
-    "symfony/monolog-bundle": "^3.6"
+    "symfony/monolog-bundle": "^3.6",
+    "symfony/security-bundle": "5.2.*",
+    "fzaninotto/faker": "^1.9",
+    "sensio/framework-extra-bundle": "^6.1"
   },
   "autoload": {
     "psr-4": {

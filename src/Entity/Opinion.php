@@ -16,32 +16,31 @@ class Opinion
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $comment;
+    private string $comment;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nickname;
+    private string $nickname;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $rate;
+    private int $rate;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="productOpinion")
      */
-    private $product;
+    private Product $product;
 
-    public static function create(Product $product, int $id, string $comment, string $nickname, int $rate): self
+    public static function create(Product $product, string $comment, string $nickname, int $rate): self
     {
         $obj = new self();
-        $obj->id = $id;
         $obj->comment = $comment;
         $obj->nickname = $nickname;
         $obj->rate = $rate;
@@ -50,12 +49,12 @@ class Opinion
         return $obj;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getComment(): ?string
+    public function getComment(): string
     {
         return $this->comment;
     }
@@ -67,7 +66,7 @@ class Opinion
         return $this;
     }
 
-    public function getNickname(): ?string
+    public function getNickname(): string
     {
         return $this->nickname;
     }
@@ -79,7 +78,7 @@ class Opinion
         return $this;
     }
 
-    public function getRate(): ?int
+    public function getRate(): int
     {
         return $this->rate;
     }
@@ -91,12 +90,12 @@ class Opinion
         return $this;
     }
 
-    public function getProduct(): ?Product
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    public function setProduct(Product $product): self
     {
         $this->product = $product;
 

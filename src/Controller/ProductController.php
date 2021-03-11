@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
-use App\Entity\Opinion;
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,16 +12,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-
-
     /**
-     * @var EntityManagerInterface
+     * @var ProductRepository
      */
-    private EntityManagerInterface $em;
+    private ProductRepository $repository;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ProductRepository $repository)
     {
-        $this->em = $em;
+        $this->repository = $repository;
     }
 
     /**
@@ -30,8 +27,7 @@ class ProductController extends AbstractController
      */
     public function listAction(): Response
     {
-        $products = $this->em->getRepository(Product::class)->findAllWithCategory();
-
+        $products = $this->repository->findAllWithCategory();
 
         return $this->render(
             'product/list.html.twig',
@@ -43,12 +39,10 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/{productId}", name="product-single")
+     * @Route("/product/{id}", name="product-single")
      */
-    public function singleAction($productId): Response
+    public function singleAction(Product $product): Response
     {
-
-        $product = $this->em->getRepository(Product::class)->findWithCategory($productId);
 
         return $this->render(
             'product/single.html.twig',

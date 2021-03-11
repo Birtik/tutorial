@@ -96,6 +96,9 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.3"
     },
+    "fzaninotto/faker": {
+        "version": "v1.9.2"
+    },
     "laminas/laminas-code": {
         "version": "4.0.0"
     },
@@ -122,6 +125,18 @@
     },
     "psr/log": {
         "version": "1.1.3"
+    },
+    "sensio/framework-extra-bundle": {
+        "version": "5.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        },
+        "files": [
+            "config/packages/sensio_framework_extra.yaml"
+        ]
     },
     "symfony/asset": {
         "version": "v5.2.4"
@@ -266,6 +281,12 @@
     "symfony/profiler-pack": {
         "version": "v1.0.5"
     },
+    "symfony/property-access": {
+        "version": "v5.2.4"
+    },
+    "symfony/property-info": {
+        "version": "v5.2.4"
+    },
     "symfony/proxy-manager-bridge": {
         "version": "v5.2.4"
     },
@@ -282,6 +303,30 @@
             "config/packages/routing.yaml",
             "config/routes.yaml"
         ]
+    },
+    "symfony/security-bundle": {
+        "version": "5.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.1",
+            "ref": "0a4bae19389d3b9cba1ca0102e3b2bccea724603"
+        },
+        "files": [
+            "config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v5.2.5"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.2.4"
+    },
+    "symfony/security-guard": {
+        "version": "v5.2.4"
+    },
+    "symfony/security-http": {
+        "version": "v5.2.5"
     },
     "symfony/service-contracts": {
         "version": "v2.2.0"

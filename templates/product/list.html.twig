@@ -1,22 +1,13 @@
 {% extends 'base.html.twig' %}
 {% import "product-item.html.twig" as item %}
 {% block title %}Hello ProductController!{% endblock %}
-
 {% block body %}
-
     <div class="album py-5 bg-light">
         <div class="container">
-
             <div class="row row-cols-md-3 g-3">
-
                 {% for product in products %}
                     {{ item.input(product.id, product.name,product.description, product.category, product.icon) }}
                 {% endfor %}
-
-                {% for product in products %}
-                    {{ item.input(product.id, product.name,product.description, product.category, product.icon) }}
-                {% endfor %}
-
             </div>
         </div>
     </div>

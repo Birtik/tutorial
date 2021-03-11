@@ -17,28 +17,27 @@ class Category
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
-    public static function create(int $id, string $name): self
+    public static function create(string $name): self
     {
         $obj = new self();
-        $obj->id = $id;
         $obj->name = $name;
 
         return $obj;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
