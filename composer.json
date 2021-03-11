@@ -10,7 +10,16 @@
     "symfony/asset": "5.2.*",
     "symfony/flex": "^1.9",
     "symfony/yaml": "5.2.*",
-    "symfony/console": "5.2.*"
+    "symfony/console": "5.2.*",
+    "symfony/maker-bundle": "^1.29",
+    "doctrine/annotations": "^1.12",
+    "symfony/twig-bundle": "5.2.*",
+    "composer/package-versions-deprecated": "1.11.99.1",
+    "doctrine/doctrine-bundle": "^2.2",
+    "doctrine/doctrine-migrations-bundle": "^3.0",
+    "doctrine/orm": "^2.8",
+    "symfony/proxy-manager-bridge": "5.2.*",
+    "symfony/monolog-bundle": "^3.6"
   },
   "autoload": {
     "psr-4": {
@@ -43,5 +52,10 @@
       "allow-contrib": true,
       "require": "5.2.*"
     }
+  },
+  "require-dev": {
+    "symfony/stopwatch": "^5.2",
+    "symfony/web-profiler-bundle": "^5.2",
+    "doctrine/doctrine-fixtures-bundle": "^3.4"
   }
 }

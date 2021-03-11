@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% import "product-item.html.twig" as item %}
+{% block title %}Hello ProductController!{% endblock %}
+
+
+{% block find %}
+
+{% endblock %}
+{% block body %}
+
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-4">
+                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="/images/product-{{ single_product.icon }}-1.jpeg" class="d-block w-100"
+                                 alt="..">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-8">
+                <p style="font-size: 20px">
+                    <b>Nazwa produktu:</b> {{ single_product.name }}
+                </p>
+                <p style="font-size: 20px">
+                    <b>Opis produktu:</b> {{ single_product.description }}
+                </p>
+                <p style="font-size: 20px">
+                    <b>Kategoria produktu:</b> {{ single_product.category.name }}
+                </p>
+                <p style="font-size: 20px">
+                    <b>Ilość sztuk:</b> {{ single_product.amount }}
+                </p>
+                <br><br>
+
+                <button type="button" class="btn btn-primary" style="float: left;">Dodaj do koszyka</button>
+                <select class="form-select" aria-label="Default select example" style="width: 10%; float: left;">
+                    <option id="1">1</option>
+                    <option id="2">2</option>
+                    <option id="3">3</option>
+                </select>
+
+                <br><br><br><br>
+                <p>
+                <h4>Opinie:</h4>
+                </p>
+                <p>
+                <ul>
+                    {% for o in single_product.productOpinion %}
+                        <li><b>{{ o.nickname }}</b> : "{{ o.comment }}" (Ocena: {{ o.rate }}/10)</li>
+                    {% endfor %}
+                </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
