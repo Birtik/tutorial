@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-//use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -26,7 +25,7 @@ class Product
     private string $name;
 
     /**
-     * @ORM\Column(type="text", length=512)
+     * @ORM\Column(type="text")
      */
     private string $description;
 
