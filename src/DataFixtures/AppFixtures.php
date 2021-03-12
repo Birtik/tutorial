@@ -10,9 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker;
 
-//require_once 'vendor/autoload.php';
-
-
 class AppFixtures extends Fixture
 {
     public function __construct(EntityManagerInterface $em)

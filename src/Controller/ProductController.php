@@ -41,9 +41,9 @@ class ProductController extends AbstractController
     /**
      * @Route("/product/{id}", name="product-single")
      */
-    public function singleAction(Product $product): Response
+    public function singleAction($id): Response
     {
-
+        $product = $this->repository->findWithCategory($id);
         return $this->render(
             'product/single.html.twig',
             [
