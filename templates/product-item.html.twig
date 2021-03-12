@@ -1,0 +1,19 @@
+{% macro  input(id, name, description, category, icon) %}
+    <div class="col">
+        <div class="card shadow-sm">
+            <img src="/images/product-{{ icon }}-1.jpeg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="card-text">{{ name }}</p>
+                <p class="card-text">{{ description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><a
+                                    href="{{ path('product-single', {'id': id }) }}">View</a>
+                        </button>
+                    </div>
+                    <small class="text-muted">Kategoria: {{ category.name }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
