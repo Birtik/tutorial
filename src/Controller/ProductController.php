@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
 use App\Repository\ProductRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,27 +22,30 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/list", name="product-list")
+     * @Route("/product/list", name="app_product_list")
+     * @return Response
      */
-    public function listAction(): Response
+    public function productList(): Response
     {
         $products = $this->repository->findAllWithCategory();
 
         return $this->render(
             'product/list.html.twig',
             [
-                'controller_name' => 'ProductController',
                 'products' => $products,
             ]
         );
     }
 
     /**
-     * @Route("/product/{id}", name="product-single")
+     * @Route("/product/{id}", name="app_product_single")
+     * @param $id
+     * @return Response
      */
-    public function singleAction($id): Response
+    public function productSingle($id): Response
     {
         $product = $this->repository->findWithCategory($id);
+
         return $this->render(
             'product/single.html.twig',
             [

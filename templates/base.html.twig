@@ -17,11 +17,17 @@
                 <strong>Sklep - Tutorial </strong>
             </a>
             <p class="h5 my-0 me-md-auto fw-normal"></p>
-            <a class="btn btn-outline-primary" href="#">Zarejestruj się</a>
-            <a class="btn btn-outline-primary" style="margin-left: 15px;" href="#">Zaloguj się</a>
-
+            {% if is_granted("ROLE_USER") %}
+                <strong class="navbar-brand d-flex align-items-center">Cześć {{ app.user.firstName }}!</strong>
+                <a class="btn btn-outline-primary" href={{ path('app_user_profile') }}>Moje konto</a>
+                <a class="btn btn-outline-primary" style="margin-left: 15px" href="{{ path('app_logout') }}">Wyloguj
+                    się</a>
+            {% else %}
+                <a class="btn btn-outline-primary" href={{ path('app_registration') }}>Zarejestruj się</a>
+                <a class="btn btn-outline-primary" style="margin-left: 15px" href="{{ path('app_login') }}">Zaloguj
+                    się</a>
+            {% endif %}
         </div>
-
     </div>
 </header>
 <main>
@@ -29,10 +35,10 @@
         <div class="row py-lg-3">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <div class="mb-3">
-                    {% if app.request.attributes.get('_route') == 'product-list' %}
+                    {% if app.request.attributes.get('_route') == 'app_product_list' %}
                         <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Wyszukaj">
-                    {% elseif app.request.attributes.get('_route') == 'product-single' %}
-                        <a href="{{ path('product-list') }}">Powrót do listy</a>
+                    {% elseif app.request.attributes.get('_route') == 'app_product_single' %}
+                        <a href="{{ path('app_product_list') }}">Powrót do listy</a>
                     {% endif %}
                 </div>
             </div>
