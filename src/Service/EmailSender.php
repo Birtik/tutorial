@@ -2,8 +2,10 @@
 
 namespace App\Service;
 
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
+
 
 class EmailSender
 {
@@ -19,11 +21,16 @@ class EmailSender
 
     public function sendEmail(string $mail, string $token): void
     {
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->from('teamOfTestShop@o2.com')
-            ->to($mail)
+            ->to(new Address($mail))
             ->subject('Miło Cię powitać!')
-            ->html("<h1>Witaj na pokładzie!</h1><p>Przejdź pod link: <a target='_blank' href='http://localhost/confirm/email/".$token."'>Potwierdź</a></p>");
+            ->htmlTemplate('registration/email_template.html.twig')
+            ->context(
+                [
+                    'token' => $token,
+                ]
+            );
 
         $this->mailer->send($email);
     }
