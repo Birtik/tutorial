@@ -34,6 +34,7 @@ class RegistrationController extends AbstractController
      * @param Request $request
      * @param EventDispatcherInterface $dispatcher
      * @return Response
+     * @throws Exception
      */
     public function registration(Request $request, EventDispatcherInterface $dispatcher): Response
     {
@@ -48,6 +49,11 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            if($this->em->getRepository(User::class)->findOneBy(['email' => $newUser->getEmail()]) !== null)
+            {
+
+            }
+
             try {
                 $this->em->beginTransaction();
                 $this->em->persist($newUser);
@@ -59,6 +65,7 @@ class RegistrationController extends AbstractController
                 $this->em->commit();
             } catch (Exception $exception) {
                 $this->em->rollback();
+                throw $exception;
             }
 
             return $this->redirectToRoute("app_complete_registration");

@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Token;
 use App\Entity\User;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ConfirmationTokenGenerator
@@ -19,19 +19,20 @@ class ConfirmationTokenGenerator
         $this->em = $em;
     }
 
-    public function generateToken(string $str): string
+    public function generateTokenForUser(User $user): Token
     {
+        $tokenHashed = md5(sprintf("{$user->getEmail()}%s", time()));
+        $expirationDate = (new DateTime())->modify('+25 hours');
+
         $token = new Token();
-        $token->setValue(md5(sprintf("{$str}%s", time())));
-        $token->setUser($this->em->getRepository(User::class)->findOneBy(['email' => $str]));
+        $token->setValue($tokenHashed);
+        $token->setUser($user);
         $token->setType(Token::TYPE_REGISTER);
-        $token->setExpiredAt(
-            (new DateTimeImmutable())->setDate(getdate()['year'], getdate()['mon'] + 1, getdate()['mday'])
-        );
+        $token->setExpiredAt($expirationDate);
 
         $this->em->persist($token);
         $this->em->flush();
 
-        return $token->getValue();
+        return $token;
     }
 }

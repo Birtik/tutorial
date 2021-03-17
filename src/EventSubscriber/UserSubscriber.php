@@ -35,7 +35,7 @@ class UserSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        $token = $this->confirmationTokenGenerator->generateToken($user->getEmail());
+        $token = $this->confirmationTokenGenerator->generateTokenForUser($user);
         $this->emailSender->sendEmail($user->getEmail(), $token);
     }
 }
