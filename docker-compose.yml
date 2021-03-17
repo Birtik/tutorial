@@ -34,3 +34,9 @@ services:
       DATABASE_HOST: db
     ports:
       - "8080"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025"
+      - "1025:1025"

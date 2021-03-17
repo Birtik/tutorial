@@ -40,14 +40,14 @@ class Product
     private int $amount;
 
     /**
+     * @ORM\Column(type="string", length=25)
+     */
+    private string $icon;
+
+    /**
      * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="product")
      */
     private Collection $productOpinion;
-
-    /**
-     * @ORM\Column(type="string", length=25)
-     */
-    private $icon;
 
     public function __construct()
     {

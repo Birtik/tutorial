@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello RegistrationController!{% endblock %}
+{% form_theme form 'foundation_5_layout.html.twig' %}
+{% block body %}
+
+    <div class="example-wrapper">
+        <h1 class="h3 mb-3 font-weight-normal">Rejestracja</h1>
+        {{ form_start(form) }}
+        <div class="form-control">
+            <i class="fa fa-calendar"></i> {{ form_label(form.email) }}
+            {{ form_widget(form.email) }}
+            <small>{{ form_help(form.email) }}</small>
+            <div class="form-error">
+                {{ form_errors(form.email) }}
+            </div>
+        </div>
+        <br>
+        <div class="form-control">
+            <i class="fa fa-calendar"></i>
+            <div class="form-error">
+                {{ form_errors(form.password) }}
+            </div>
+            {{ form_widget(form.password) }}
+            <small>{{ form_help(form.password) }}</small>
+        </div>
+        <br>
+        <div class="form-control">
+            <i class="fa fa-calendar"></i> {{ form_label(form.firstName) }}
+            {{ form_widget(form.firstName) }}
+            <small>{{ form_help(form.firstName) }}</small>
+            <div class="form-error">
+                {{ form_errors(form.firstName) }}
+            </div>
+        </div>
+        <br>
+        <div class="form-control">
+            <i class="fa fa-calendar"></i> {{ form_label(form.LastName) }}
+            {{ form_widget(form.LastName) }}
+            <small>{{ form_help(form.LastName) }}</small>
+            <div class="form-error">
+                {{ form_errors(form.LastName) }}
+            </div>
+        </div>
+        <br>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

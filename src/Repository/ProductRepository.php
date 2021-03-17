@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,10 +20,7 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-     /**
-      * @return Product[] Returns an array of Product objects
-      */
-    public function findWithCategory($id)
+    public function findWithCategory($id): ?Product
     {
         return $this->createQueryBuilder('p')
             ->select('p','c','o')
@@ -39,7 +37,7 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return Product[] Returns an array of Product objects
      */
-    public function findAllWithCategory()
+    public function findAllWithCategory(): array
     {
         return $this->createQueryBuilder('p')
             ->select('p','c')
