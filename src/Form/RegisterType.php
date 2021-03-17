@@ -32,7 +32,7 @@ class RegisterType extends AbstractType
             ->add('Zajerestruj', SubmitType::class);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

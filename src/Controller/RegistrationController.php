@@ -49,11 +49,6 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            if($this->em->getRepository(User::class)->findOneBy(['email' => $newUser->getEmail()]) !== null)
-            {
-
-            }
-
             try {
                 $this->em->beginTransaction();
                 $this->em->persist($newUser);

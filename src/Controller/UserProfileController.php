@@ -15,8 +15,10 @@ class UserProfileController extends AbstractController
     public function userProfile(): Response
     {
         return $this->render(
-            'user_profile/profile.html.twig', [
-        ]);
+            'user_profile/profile.html.twig',
+            [
+            ]
+        );
     }
 
     /**
@@ -26,8 +28,10 @@ class UserProfileController extends AbstractController
     public function orderHistory(): Response
     {
         return $this->render(
-            'user_profile/order_history.html.twig', [
-        ]);
+            'user_profile/order_history.html.twig',
+            [
+            ]
+        );
     }
 
     /**
@@ -37,7 +41,9 @@ class UserProfileController extends AbstractController
     public function changePassword(): Response
     {
         return $this->render(
-            'user_profile/change_password.html.twig', [
-        ]);
+            'user_profile/change_password.html.twig',
+            [
+            ]
+        );
     }
 }
