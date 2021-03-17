@@ -18,7 +18,7 @@ class BasketProduct
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Basket::class, inversedBy="basketProducts")
+     * @ORM\ManyToOne(targetEntity=Basket::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private Basket $basket;
@@ -29,7 +29,7 @@ class BasketProduct
     private int $amount;
 
     /**
-     * @ORM\OneToOne(targetEntity=Product::class, cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Product::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private Product $product;
@@ -57,6 +57,7 @@ class BasketProduct
     public function setBasket(Basket $basket): self
     {
         $this->basket = $basket;
+
         return $this;
     }
 
@@ -68,6 +69,7 @@ class BasketProduct
     public function setAmount(int $amount): self
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -79,6 +81,7 @@ class BasketProduct
     public function setProduct(Product $product): self
     {
         $this->product = $product;
+
         return $this;
     }
 
@@ -90,6 +93,7 @@ class BasketProduct
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -101,6 +105,7 @@ class BasketProduct
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 }

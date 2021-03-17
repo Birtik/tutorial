@@ -27,8 +27,11 @@ class BasketProductRepository extends ServiceEntityRepository
             ->join('i.product','p')
             ->join('b.user', 'u')
             ->where('u.email = :username')
+            ->andWhere('b.deletedAt is null')
             ->setParameter('username', $username)
             ->getQuery()
             ->getResult();
     }
+
+
 }

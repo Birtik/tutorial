@@ -54,8 +54,13 @@ class Product
         $this->productOpinion = new ArrayCollection();
     }
 
-    public static function create(Category $category, string $name, string $description, int $amount, string $icon): self
-    {
+    public static function create(
+        Category $category,
+        string $name,
+        string $description,
+        int $amount,
+        string $icon
+    ): self {
         $obj = new self();
         $obj->category = $category;
         $obj->name = $name;

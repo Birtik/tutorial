@@ -18,4 +18,16 @@ class BasketRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Basket::class);
     }
+
+    public function findActiveUserBasket($email)
+    {
+        return $this->createQueryBuilder('b')
+            ->select('b','u')
+            ->join('b.user', 'u')
+            ->where('u.email = :email')
+            ->andWhere('b.deletedAt is null')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
