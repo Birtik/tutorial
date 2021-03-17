@@ -19,7 +19,7 @@
             <p class="h5 my-0 me-md-auto fw-normal"></p>
             {% if is_granted("ROLE_USER") %}
                 <strong class="navbar-brand d-flex align-items-center">Cześć {{ app.user.firstName }}!</strong>
-                <a class="btn btn-outline-primary" href={{ path('app_user_profile') }}>Koszyk</a>
+                <a class="btn btn-outline-primary" href={{ path('app_basket') }}>Koszyk</a>
                 <a class="btn btn-outline-primary" style="margin-left: 15px" href={{ path('app_user_profile') }}>Moje konto</a>
                 <a class="btn btn-outline-primary" style="margin-left: 15px" href="{{ path('app_logout') }}">Wyloguj
                     się</a>

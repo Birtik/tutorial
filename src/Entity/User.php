@@ -66,6 +66,11 @@ class User implements UserInterface
      */
     private bool $enabled = false;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Basket::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private Basket $basket;
+
     public function getId(): int
     {
         return $this->id;
@@ -177,6 +182,21 @@ class User implements UserInterface
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function getBasket(): ?Basket
+    {
+        return $this->basket;
+    }
+
+    public function setBasket(Basket $basket): self
+    {
+        if ($basket->getUser() !== $this) {
+            $basket->setUser($this);
+        }
+        $this->basket = $basket;
 
         return $this;
     }

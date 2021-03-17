@@ -38,7 +38,14 @@
                     <b>Ilość sztuk:</b> {{ single_product.amount }}
                 </p>
                 <br><br>
-                <button type="button" class="btn btn-primary" style="float: left;">Dodaj do koszyka</button>
+
+                {{ form_start(form) }}
+
+                <br>
+                <button type="submit" class="btn btn-primary" style="float: left;">Dodaj do koszyka</button>
+                {{ form_end(form) }}
+
+
                 <select class="form-select" aria-label="Default select example" style="width: 10%; float: left;">
                     <option id="1">1</option>
                     <option id="2">2</option>
