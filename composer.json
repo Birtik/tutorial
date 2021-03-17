@@ -23,7 +23,6 @@
     "symfony/security-bundle": "5.2.*",
     "fzaninotto/faker": "^1.9",
     "sensio/framework-extra-bundle": "^6.1",
-    "symfony/debug-bundle": "5.2.*",
     "symfony/stopwatch": "^5.2",
     "symfony/form": "5.2.*",
     "symfony/validator": "5.2.*",
@@ -64,6 +63,7 @@
   },
   "require-dev": {
     "doctrine/doctrine-fixtures-bundle": "^3.4",
-    "symfony/web-profiler-bundle": "^5.2"
+    "symfony/web-profiler-bundle": "^5.2",
+    "symfony/debug-bundle": "5.2.*"
   }
 }

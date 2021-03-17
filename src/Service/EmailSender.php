@@ -19,7 +19,7 @@ class EmailSender
         $this->mailer = $mailer;
     }
 
-    public function sendEmail(string $mail, string $token): void
+    public function sendEmail(string $mail, string $value): void
     {
         $email = (new TemplatedEmail())
             ->from('teamOfTestShop@o2.com')
@@ -28,7 +28,7 @@ class EmailSender
             ->htmlTemplate('registration/email_template.html.twig')
             ->context(
                 [
-                    'token' => $token,
+                    'token' => $value,
                 ]
             );
 
