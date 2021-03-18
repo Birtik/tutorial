@@ -28,6 +28,14 @@ class Basket
      */
     private ?\DateTimeInterface $deletedAt;
 
+    public static function create(User $user): Basket
+    {
+        $obj = new self();
+        $obj->setUser($user);
+
+        return $obj;
+    }
+
     public function getId(): int
     {
         return $this->id;

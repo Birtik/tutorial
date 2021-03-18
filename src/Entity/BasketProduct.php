@@ -44,6 +44,18 @@ class BasketProduct
      */
     private \DateTimeInterface $updatedAt;
 
+    public static function create(Basket $basket, Product $product, int $amount): BasketProduct
+    {
+        $obj = new self();
+        $obj->setBasket($basket);
+        $obj->setUpdatedAt(new \DateTime());
+        $obj->setCreatedAt(new \DateTime());
+        $obj->setProduct($product);
+        $obj->setAmount($amount);
+
+        return $obj;
+    }
+
     public function getId(): int
     {
         return $this->id;

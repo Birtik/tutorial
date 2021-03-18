@@ -18,16 +18,35 @@ class BasketController extends AbstractController
     {
         $this->basketProductRepository = $basketProductRepository;
     }
+
     /**
-     * @Route("/basket", name="app_basket")
+     * @Route("/basket", name="app_basket", methods={"GET"})
      */
     public function basket(): Response
     {
-        $username = $this->get('security.token_storage')->getToken()->getUser()->getUsername();
-        $basketProducts = $this->basketProductRepository->findAllProductsForUser($username);
+        $user = $this->getUser();
+        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user->getUsername());
 
-        return $this->render('basket/index.html.twig', [
-            'items' => $basketProducts
-        ]);
+        return $this->render(
+            'basket/index.html.twig',
+            [
+                'items' => $basketProducts,
+            ]
+        );
     }
+
+    /**
+     * @Route("/basket/delete/{id}", name="app_basket_delete", methods={"GET"})
+     * @param $id
+     * @return Response
+     */
+    public function basketDelete($id): Response
+    {
+        $basketProduct = $this->basketProductRepository->find($id);
+        $this->basketProductRepository->delete($basketProduct);
+
+        return $this->redirectToRoute('app_basket');
+    }
+
+
 }

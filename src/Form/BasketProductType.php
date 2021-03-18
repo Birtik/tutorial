@@ -11,7 +11,6 @@ class BasketProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

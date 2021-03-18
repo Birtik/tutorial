@@ -30,4 +30,10 @@ class BasketRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function save(Basket $basket): void
+    {
+        $this->_em->persist($basket);
+        $this->_em->flush();
+    }
 }

@@ -33,5 +33,16 @@ class BasketProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function save(BasketProduct $basketProduct): void
+    {
+        $this->_em->persist($basketProduct);
+        $this->_em->flush();
+    }
+
+    public function delete(BasketProduct $basketProduct): void
+    {
+        $this->_em->remove($basketProduct);
+        $this->_em->flush();
+    }
 
 }
