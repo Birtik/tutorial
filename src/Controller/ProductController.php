@@ -59,7 +59,6 @@ class ProductController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-//        $count = $request->request->getInt('count');
         $form = $this->createForm(BasketProductType::class, $model, ['limit' => $product->getAmount()]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

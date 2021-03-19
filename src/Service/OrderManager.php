@@ -72,11 +72,9 @@ class OrderManager
             $orderProducts[] = $orderProduct;
         }
 
-        $serializer = $this->serializerManager->serializer;
-        $items = $serializer->serialize($orderProducts, 'json');
-        $jsonArray = json_decode($items, true);
+        $items = $this->serializerManager->serializer($orderProducts);
 
-        $order = $this->orderFactory->create($user, $jsonArray);
+        $order = $this->orderFactory->create($user, $items);
         $this->orderRepository->save($order);
     }
 

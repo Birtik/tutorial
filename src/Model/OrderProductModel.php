@@ -6,12 +6,9 @@ namespace App\Model;
 
 class OrderProductModel
 {
-    public string $productName;
-
-    public int $amount;
-
-    public int $price;
-
+    private string $productName;
+    private int $amount;
+    private int $price;
 
     public static function create(string $productName, int $amount, int $price): OrderProductModel
     {
@@ -32,14 +29,6 @@ class OrderProductModel
     }
 
     /**
-     * @param string $productName
-     */
-    public function setProductName(string $productName): void
-    {
-        $this->productName = $productName;
-    }
-
-    /**
      * @return int
      */
     public function getAmount(): int
@@ -48,26 +37,10 @@ class OrderProductModel
     }
 
     /**
-     * @param int $amount
-     */
-    public function setAmount(int $amount): void
-    {
-        $this->amount = $amount;
-    }
-
-    /**
      * @return int
      */
     public function getPrice(): int
     {
         return $this->price;
-    }
-
-    /**
-     * @param int $price
-     */
-    public function setPrice(int $price): void
-    {
-        $this->price = $price;
     }
 }

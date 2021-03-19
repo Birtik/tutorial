@@ -23,4 +23,10 @@ class SerializerManager
         $this->normalizers = [new ObjectNormalizer()];
         $this->serializer = new Serializer($this->normalizers, $this->encoders);
     }
+
+    public function serializer(array $orderProducts): array
+    {
+        $items = $this->serializer->serialize($orderProducts, 'json');
+        return json_decode($items, true);
+    }
 }

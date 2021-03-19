@@ -40,7 +40,7 @@ class UserProfileController extends AbstractController
     public function orderHistory(): Response
     {
         $user = $this->getUser();
-        $orders = $this->orderRepository->findAllOrdersForUser($user->getUsername());
+        $orders = $this->orderRepository->findAllOrdersForUser($user);
 
         return $this->render(
             'user_profile/order_history.html.twig',

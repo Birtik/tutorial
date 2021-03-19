@@ -20,14 +20,12 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-
-    public function findAllOrdersForUser(string $username)
+    public function findAllOrdersForUser(User $user)
     {
         return $this->createQueryBuilder('o')
-            ->select('o','u')
-            ->join('o.user','u')
-            ->where('u.email = :username')
-            ->setParameter('username',$username)
+            ->select('o')
+            ->where('o.user = :user')
+            ->setParameter('user',$user)
             ->getQuery()
             ->getResult()
             ;
