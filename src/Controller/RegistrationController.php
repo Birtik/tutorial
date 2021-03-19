@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Event\UserRegisteredEvent;
 use App\Form\RegisterType;
 use App\Repository\TokenRepository;
+use App\Security\LoginFormAuthenticator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -85,11 +86,12 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route("/confirm/email/{value}", name="app_confirm_email")
-     * @param string $value
      * @param TokenRepository $tokenRepository
+     * @param LoginFormAuthenticator $loginFormAuthenticator
+     * @param string $value
      * @return RedirectResponse
      */
-    public function confirmEmail(string $value, TokenRepository $tokenRepository): RedirectResponse
+    public function confirmEmail(TokenRepository $tokenRepository,LoginFormAuthenticator $loginFormAuthenticator, string $value): RedirectResponse
     {
         $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
 
@@ -109,7 +111,7 @@ class RegistrationController extends AbstractController
 
         $this->addFlash(
             'success',
-            'Konto zostało aktywowane. Zaloguj się.'
+            'Konto zostało aktywowane. Witamy!'
         );
 
         return $this->redirectToRoute('app_login');

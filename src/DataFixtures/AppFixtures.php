@@ -36,7 +36,8 @@ class AppFixtures extends Fixture
                 $faker->name,
                 $faker->sentence(),
                 $faker->numberBetween(1, 100),
-                '1'
+                '1',
+                $faker->numberBetween(1,50)
             );
             $manager->persist($product);
 

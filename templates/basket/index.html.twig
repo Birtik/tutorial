@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello BasketController!{% endblock %}
+{% block body %}
+    <div class="example-wrapper">
+        {% if items is empty %}
+            <center>Brak produktów w koszyku</center>
+        {% else %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Lp.</th>
+                    <th scope="col">Ilość</th>
+                    <th scope="col">Nazwa produktu</th>
+                    <th scope="col">Cena</th>
+                    <th scope="col">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ item.amount }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>1.20 (zł)</td>
+                        <td>
+                            <button type="button" class="btn btn-danger"><a href="{{ path('app_basket_delete', {'id': item.id}) }}">Usuń</a></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <th scope="row"></th>
+                    <td colspan="2">Podsumowanie:</td>
+                    <td>20 (zł)</td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+            <center>
+                <button type="button" class="btn btn-dark"><a href="{{ path('app_submit_order') }}">Przejdź do podsumowania</a></button>
+            </center>
+        {% endif %}
+    </div>
+{% endblock %}

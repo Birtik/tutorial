@@ -32,18 +32,31 @@
                     <b>Opis produktu:</b> {{ single_product.description }}
                 </p>
                 <p style="font-size: 20px">
+                    <b>Cena produktu:</b> {{ single_product.price }}
+                </p>
+                <p style="font-size: 20px">
                     <b>Kategoria produktu:</b> {{ single_product.category.name }}
                 </p>
                 <p style="font-size: 20px">
                     <b>Ilość sztuk:</b> {{ single_product.amount }}
                 </p>
                 <br><br>
-                <button type="button" class="btn btn-primary" style="float: left;">Dodaj do koszyka</button>
-                <select class="form-select" aria-label="Default select example" style="width: 10%; float: left;">
-                    <option id="1">1</option>
-                    <option id="2">2</option>
-                    <option id="3">3</option>
-                </select>
+                {% if is_granted("ROLE_USER") %}
+                    {{ form_start(form) }}
+
+                    <div class="form-control">
+                        <i class="fa fa-calendar"></i> Ilość
+                        {{ form_widget(form.count) }}
+
+                        <small>{{ form_help(form.count) }}</small>
+
+                        <div class="form-error">
+                            {{ form_errors(form.count) }}
+                        </div>
+                    </div><br>
+                    {{ form_widget(form.submit, { 'label': 'Dodaj do koszyka' }) }}
+                    {{ form_end(form) }}
+                {% endif %}
                 <br><br><br><br>
                 <p>
                 <h4>Opinie:</h4>
