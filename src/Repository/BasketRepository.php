@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Basket;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,14 +20,13 @@ class BasketRepository extends ServiceEntityRepository
         parent::__construct($registry, Basket::class);
     }
 
-    public function findActiveUserBasket($email)
+    public function findActiveUserBasket(User $user)
     {
         return $this->createQueryBuilder('b')
-            ->select('b','u')
-            ->join('b.user', 'u')
-            ->where('u.email = :email')
+            ->select('b')
+            ->where('b.user = :user')
             ->andWhere('b.deletedAt is null')
-            ->setParameter('email', $email)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult();
     }

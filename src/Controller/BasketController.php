@@ -25,7 +25,7 @@ class BasketController extends AbstractController
     public function basket(): Response
     {
         $user = $this->getUser();
-        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user->getUsername());
+        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user);
 
         return $this->render(
             'basket/index.html.twig',

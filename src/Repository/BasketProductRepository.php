@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\BasketProduct;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,16 +20,15 @@ class BasketProductRepository extends ServiceEntityRepository
         parent::__construct($registry, BasketProduct::class);
     }
 
-    public function findAllProductsForUser($username)
+    public function findAllProductsForUser(User $user)
     {
         return $this->createQueryBuilder('i')
-            ->select('i', 'b', 'u','p')
+            ->select('i', 'b','p')
             ->join('i.basket', 'b')
             ->join('i.product','p')
-            ->join('b.user', 'u')
-            ->where('u.email = :username')
+            ->where('b.user = :user')
             ->andWhere('b.deletedAt is null')
-            ->setParameter('username', $username)
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }

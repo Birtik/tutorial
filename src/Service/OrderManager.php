@@ -59,7 +59,7 @@ class OrderManager
 
     public function submitOrder(User $user): void
     {
-        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user->getUsername());
+        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user);
         $orderProducts = [];
 
         foreach ($basketProducts as $item) {
@@ -80,7 +80,7 @@ class OrderManager
 
     public function clearBasket(User $user): void
     {
-        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user->getUsername());
+        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user);
         $basket = $basketProducts[0]->getBasket();
         $basket->setDeletedAt(new \DateTime());
 

@@ -39,7 +39,7 @@ class BasketProductManager
 
     public function addProduct(User $user, Product $product, string $count): void
     {
-        $basket = $this->basketRepository->findActiveUserBasket($user->getUsername());
+        $basket = $this->basketRepository->findActiveUserBasket($user);
 
         if ($basket === null) {
 
