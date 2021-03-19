@@ -49,6 +49,11 @@ class Product
      */
     private Collection $productOpinion;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $price;
+
     public function __construct()
     {
         $this->productOpinion = new ArrayCollection();
@@ -59,7 +64,8 @@ class Product
         string $name,
         string $description,
         int $amount,
-        string $icon
+        string $icon,
+        int $price
     ): self {
         $obj = new self();
         $obj->category = $category;
@@ -67,6 +73,7 @@ class Product
         $obj->description = $description;
         $obj->amount = $amount;
         $obj->icon = $icon;
+        $obj->price = $price;
 
         return $obj;
     }
@@ -140,7 +147,17 @@ class Product
     public function setIcon(string $icon): self
     {
         $this->icon = $icon;
+        return $this;
+    }
 
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
         return $this;
     }
 

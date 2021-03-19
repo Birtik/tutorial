@@ -20,11 +20,21 @@ class BasketProductManager
      * @var BasketProductRepository
      */
     private BasketProductRepository $basketProductRepository;
+    /**
+     * @var BasketFactory
+     */
+    private BasketFactory $basketFactory;
+    /**
+     * @var BasketProductFactory
+     */
+    private BasketProductFactory $basketProductFactory;
 
-    public function __construct(BasketRepository $basketRepository, BasketProductRepository $basketProductRepository)
+    public function __construct(BasketRepository $basketRepository, BasketProductRepository $basketProductRepository, BasketProductFactory $basketProductFactory, BasketFactory $basketFactory)
     {
         $this->basketRepository = $basketRepository;
         $this->basketProductRepository = $basketProductRepository;
+        $this->basketFactory = $basketFactory;
+        $this->basketProductFactory = $basketProductFactory;
     }
 
     public function addProduct(User $user, Product $product, string $count): void
@@ -32,13 +42,12 @@ class BasketProductManager
         $basket = $this->basketRepository->findActiveUserBasket($user->getUsername());
 
         if ($basket === null) {
-            $basket = new BasketFactory();
-            $basket = $basket->create($user);
+
+            $basket = $this->basketFactory->create($user);
             $this->basketRepository->save($basket);
         }
 
-        $basketProduct = new BasketProductFactory();
-        $basketProduct = $basketProduct->create($basket,$product,(int)$count);
+        $basketProduct = $this->basketProductFactory->create($basket,$product,(int)$count);
         $this->basketProductRepository->save($basketProduct);
     }
 }

@@ -44,5 +44,4 @@ class BasketProductRepository extends ServiceEntityRepository
         $this->_em->remove($basketProduct);
         $this->_em->flush();
     }
-
 }

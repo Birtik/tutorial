@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\BasketProductType;
+use App\Model\FormBasketProductModel;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
 use App\Service\BasketProductManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -41,23 +44,29 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/{id}", name="app_product_single", methods={"GET"})
+     * @Route("/product/{id}", name="app_product_single")
      * @param Request $request
-     * @param BasketProductManager $additionBasketProduct
+     * @param BasketProductManager $basketProductManager
+     * @param FormBasketProductModel $model
      * @param $id
      * @return Response
      */
-    public function productSingle(Request $request, BasketProductManager $additionBasketProduct, $id): Response
+    public function productSingle(Request $request, BasketProductManager $basketProductManager,FormBasketProductModel $model, $id): Response
     {
         $product = $this->productRepository->findWithCategory($id);
 
-        $count = $request->get('count');
-        $form = $this->createForm(BasketProductType::class);
+        if(null === $product) {
+            throw new NotFoundHttpException();
+        }
+
+//        $count = $request->request->getInt('count');
+        $form = $this->createForm(BasketProductType::class, $model, ['limit' => $product->getAmount()]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            /** @var User $user */
             $user = $this->getUser();
-            $additionBasketProduct->addProduct($user, $product, $count);
+            $basketProductManager->addProduct($user, $product, $model->getCount());
         }
 
         return $this->render(

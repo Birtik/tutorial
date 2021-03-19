@@ -20,34 +20,45 @@
             </div>
             <div class="col-9">
 
-                <table class="table">
+                <table class="table" border="1px solid black">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Lp.</th>
+                        <th scope="col">Zamówienie</th>
+                        <th scope="col">Data zamówienia</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
+                    {% for order in orders %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>
+                                <table class="table" border="1px solid black">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Lp.</th>
+                                        <th scope="col">Nazwa produktu</th>
+                                        <th scope="col">Ilość</th>
+                                        <th scope="col">Cena</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in order.items %}
+                                    <tr>
+                                        <th scope="row">{{ loop.index }}</th>
+                                        <td>{{ item.productName }}</td>
+                                        <td>{{ item.amount }}</td>
+                                        <td>{{ item.price/100 * item.amount }}zł</td>
+                                        {% endfor %}
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                </ul>
+                            </td>
+                            <td>{{ order.createdAt|date("m/d/Y H:i:s") }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
 
