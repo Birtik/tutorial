@@ -61,7 +61,7 @@ class OrderController extends AbstractController
         }
 
         $basketProductsCollection = $basket->getBasketProducts();
-        if (empty($basketProductsCollection->getValues())) {
+        if ($basketProductsCollection->isEmpty()) {
             $this->addFlash('notice', 'Brak produktów do stworzenia zamówienia');
 
             return $this->redirectToRoute('app_order_history');

@@ -15,9 +15,12 @@ class EmailSender
      */
     private MailerInterface $mailer;
 
-    public function __construct(MailerInterface $mailer)
+    private string $from;
+
+    public function __construct(MailerInterface $mailer, string $from)
     {
         $this->mailer = $mailer;
+        $this->from = $from;
     }
 
     /**
@@ -28,7 +31,7 @@ class EmailSender
     public function sendConfirmationEmail(string $mail, string $value): void
     {
         $email = (new TemplatedEmail())
-            ->from('teamOfTestShop@o2.com')
+            ->from($this->from)
             ->to(new Address($mail))
             ->subject('Miło Cię powitać!')
             ->htmlTemplate('registration/email_template.html.twig')
@@ -48,7 +51,7 @@ class EmailSender
     public function sendDoubleRegistrationAlertEmail(string $mail): void
     {
         $email = (new TemplatedEmail())
-            //->from('teamOfTestShop@o2.com')
+            ->from($this->from)
             ->to(new Address($mail))
             ->subject('Ktoś próbował założyć konto na Twój adres email')
             ->htmlTemplate('registration/email_template_alert.html.twig')

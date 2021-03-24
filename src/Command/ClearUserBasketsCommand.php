@@ -36,9 +36,9 @@ class ClearUserBasketsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->logger->info('ClearBasketsInProgress');
+        $this->logger->debug('ClearBasketsInProgress');
         $this->basketProductManager->clearAllUnusedBasket();
-        $this->logger->info('ClearBasketsDone');
+        $this->logger->debug('ClearBasketsDone');
 
         return Command::SUCCESS;
     }
