@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\BasketProductType;
 use App\Model\FormBasketProductModel;
-use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
 use App\Service\BasketProductManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 class ProductController extends AbstractController
 {
@@ -65,7 +63,9 @@ class ProductController extends AbstractController
 
             /** @var User $user */
             $user = $this->getUser();
-            $basketProductManager->addProduct($user, $product, $model->getCount());
+            $basketProductManager->addBasketProduct($user, $product, $model->getAmount());
+
+            return $this->redirectToRoute('app_product_single',['id' => $id]);
         }
 
         return $this->render(

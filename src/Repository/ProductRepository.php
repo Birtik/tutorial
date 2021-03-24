@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,11 +17,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
+    /**
+     * ProductRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
     }
 
+    /**
+     * @param $id
+     * @return Product|null
+     * @throws NonUniqueResultException
+     */
     public function findWithCategory($id): ?Product
     {
         return $this->createQueryBuilder('p')
@@ -46,5 +57,16 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
             ;
+    }
+
+    /**
+     * @param Product $product
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function save(Product $product): void
+    {
+        $this->_em->persist($product);
+        $this->_em->flush();
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\BasketRepository;
 use App\Service\OrderManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -22,14 +24,24 @@ class OrderController extends AbstractController
     private EntityManagerInterface $em;
 
     /**
+     * @var BasketRepository
+     */
+    private BasketRepository $basketRepository;
+
+    /**
      * OrderController constructor.
      * @param OrderManager $orderManager
      * @param EntityManagerInterface $em
+     * @param BasketRepository $basketRepository
      */
-    public function __construct(OrderManager $orderManager, EntityManagerInterface $em)
-    {
+    public function __construct(
+        OrderManager $orderManager,
+        EntityManagerInterface $em,
+        BasketRepository $basketRepository
+    ) {
         $this->orderManager = $orderManager;
         $this->em = $em;
+        $this->basketRepository = $basketRepository;
     }
 
     /**
@@ -38,12 +50,27 @@ class OrderController extends AbstractController
      */
     public function submit(): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
+        $basket = $this->basketRepository->findActiveUserBasket($user);
+
+        if (null === $basket) {
+            $this->addFlash('notice', 'Brak aktywnego koszyka');
+
+            return $this->redirectToRoute('app_order_history');
+        }
+
+        $basketProductsCollection = $basket->getBasketProducts();
+        if ($basketProductsCollection->isEmpty()) {
+            $this->addFlash('notice', 'Brak produktów do stworzenia zamówienia');
+
+            return $this->redirectToRoute('app_order_history');
+        }
 
         try {
             $this->em->beginTransaction();
-            $this->orderManager->submitOrder($user);
-            $this->orderManager->clearBasket($user);
+            $this->orderManager->createOrder($user);
+            $this->orderManager->clearUserBasket($user);
             $this->em->flush();
             $this->em->commit();
         } catch (Exception $e) {
@@ -51,12 +78,6 @@ class OrderController extends AbstractController
             throw $e;
         }
 
-
-        return $this->render(
-            'order/index.html.twig',
-            [
-
-            ]
-        );
+        return $this->redirectToRoute('app_order_history');
     }
 }

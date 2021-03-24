@@ -13,22 +13,30 @@ class BasketProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $limit = $options['limit'];
-        $selectChoices = [];
+        $selectChoices = $this->generateSelectChoices($options['limit']);
+        if (count($selectChoices) > 0) {
+            $builder
+                ->add(
+                    'amount',
+                    ChoiceType::class,
+                    [
+                        'choices' => [
+                            'Ilość' =>
+                                $selectChoices,
+                        ],
+                    ]
+                )->add('submit', SubmitType::class);
+        }
+    }
 
-        for($i=1;$i<=$limit;$i++)
-        {
+    public function generateSelectChoices(int $limit): array
+    {
+        $selectChoices = [];
+        for ($i = 1; $i <= $limit; $i++) {
             $selectChoices[$i] = $i;
         }
 
-        $builder
-            ->add('count', ChoiceType::class, [
-                'choices' => [
-                    'Ilość' =>
-                        $selectChoices
-                ]
-            ]) //select z limitem pobieranym z opcji
-            ->add('submit', SubmitType::class);
+        return $selectChoices;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

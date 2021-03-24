@@ -44,17 +44,20 @@
                 {% if is_granted("ROLE_USER") %}
                     {{ form_start(form) }}
 
-                    <div class="form-control">
-                        <i class="fa fa-calendar"></i> Ilość
-                        {{ form_widget(form.count) }}
+                    {% if form.amount is defined %}
+                        <div class="form-control">
+                            <i class="fa fa-calendar"></i> Ilość
+                            {{ form_widget(form.amount) }}
+                            <small>{{ form_help(form.amount) }}</small>
 
-                        <small>{{ form_help(form.count) }}</small>
-
-                        <div class="form-error">
-                            {{ form_errors(form.count) }}
-                        </div>
-                    </div><br>
-                    {{ form_widget(form.submit, { 'label': 'Dodaj do koszyka' }) }}
+                            <div class="form-error">
+                                {{ form_errors(form.amount) }}
+                            </div>
+                        </div><br>
+                        {{ form_widget(form.submit, { 'label': 'Dodaj do koszyka' }) }}
+                    {% else %}
+                        Brak produktów na magazynie
+                    {% endif %}
                     {{ form_end(form) }}
                 {% endif %}
                 <br><br><br><br>
