@@ -4,6 +4,11 @@
 
 {% block body %}
     <div class="example-wrapper" style="max-width:1200px">
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
         <div class="row">
             <div class="col-3">
                 <ul class="list-group">

@@ -22,7 +22,7 @@ class OrderController extends AbstractController
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $em;
-    
+
     /**
      * @var BasketRepository
      */
@@ -34,8 +34,11 @@ class OrderController extends AbstractController
      * @param EntityManagerInterface $em
      * @param BasketRepository $basketRepository
      */
-    public function __construct(OrderManager $orderManager, EntityManagerInterface $em, BasketRepository $basketRepository)
-    {
+    public function __construct(
+        OrderManager $orderManager,
+        EntityManagerInterface $em,
+        BasketRepository $basketRepository
+    ) {
         $this->orderManager = $orderManager;
         $this->em = $em;
         $this->basketRepository = $basketRepository;
@@ -51,7 +54,16 @@ class OrderController extends AbstractController
         $user = $this->getUser();
         $basket = $this->basketRepository->findActiveUserBasket($user);
 
-        if(null === $basket){
+        if (null === $basket) {
+            $this->addFlash('notice', 'Brak aktywnego koszyka');
+
+            return $this->redirectToRoute('app_order_history');
+        }
+
+        $basketProductsCollection = $basket->getBasketProducts();
+        if (empty($basketProductsCollection->getValues())) {
+            $this->addFlash('notice', 'Brak produktów do stworzenia zamówienia');
+
             return $this->redirectToRoute('app_order_history');
         }
 

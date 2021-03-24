@@ -48,7 +48,7 @@ class EmailSender
     public function sendDoubleRegistrationAlertEmail(string $mail): void
     {
         $email = (new TemplatedEmail())
-            ->from('teamOfTestShop@o2.com')
+            //->from('teamOfTestShop@o2.com')
             ->to(new Address($mail))
             ->subject('Ktoś próbował założyć konto na Twój adres email')
             ->htmlTemplate('registration/email_template_alert.html.twig')

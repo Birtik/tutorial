@@ -46,9 +46,11 @@ class BasketController extends AbstractController
     public function basketDelete($id): Response
     {
         $basketProduct = $this->basketProductRepository->find($id);
+
         if (null === $basketProduct) {
             throw new NotFoundHttpException();
         }
+
         $this->basketProductRepository->delete($basketProduct);
 
         return $this->redirectToRoute('app_basket');

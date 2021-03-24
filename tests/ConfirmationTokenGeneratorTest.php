@@ -57,10 +57,6 @@ class ConfirmationTokenGeneratorTest extends TestCase
         self::assertInstanceOf(Token::class,$token);
         self::assertInstanceOf(User::class, $token->getUser());
         self::assertInstanceOf(DateTime::class,$token->getExpiredAt());
-        self::assertIsNotArray(Token::class,$token->getValue());
-        self::assertIsNotBool(Token::class,$token->getValue());
-        self::assertIsNotFloat(Token::class,$token->getValue());
-        self::assertIsString(Token::class, $token->getValue());
     }
 
     public function testGenerateSecondUserToken(): void
@@ -97,9 +93,5 @@ class ConfirmationTokenGeneratorTest extends TestCase
         self::assertInstanceOf(Token::class,$token);
         self::assertInstanceOf(User::class, $token->getUser());
         self::assertInstanceOf(DateTime::class,$token->getExpiredAt());
-        self::assertIsNotArray(Token::class,$token->getValue());
-        self::assertIsNotBool(Token::class,$token->getValue());
-        self::assertIsNotFloat(Token::class,$token->getValue());
-        self::assertIsString(Token::class, $token->getValue());
     }
 }

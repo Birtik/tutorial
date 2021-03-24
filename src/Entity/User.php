@@ -22,7 +22,7 @@ class User implements UserInterface
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=180)
+     * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email(
      *      message = "Email '{{ value }}' nie jest poprawny!"
      * )

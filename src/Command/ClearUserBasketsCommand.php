@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\BasketProductManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,9 +17,15 @@ class ClearUserBasketsCommand extends Command
      */
     private BasketProductManager $basketProductManager;
 
-    public function __construct(BasketProductManager $basketProductManager)
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    public function __construct(BasketProductManager $basketProductManager, LoggerInterface $logger)
     {
         $this->basketProductManager = $basketProductManager;
+        $this->logger = $logger;
         parent::__construct();
     }
 
@@ -29,9 +36,9 @@ class ClearUserBasketsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('ClearBasketsInProgress...');
+        $this->logger->info('ClearBasketsInProgress');
         $this->basketProductManager->clearAllUnusedBasket();
-        $output->writeln('ClearBasketsDone');
+        $this->logger->info('ClearBasketsDone');
 
         return Command::SUCCESS;
     }

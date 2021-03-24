@@ -16,21 +16,23 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% set sum = 0 %}
                 {% for item in items %}
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ item.amount }}</td>
                         <td>{{ item.product.name }}</td>
-                        <td>1.20 (zł)</td>
+                        <td>{{ item.product.price }}zł</td>
                         <td>
                             <button type="button" class="btn btn-danger"><a href="{{ path('app_basket_delete', {'id': item.id}) }}">Usuń</a></button>
                         </td>
                     </tr>
+                    {% set sum = sum + item.product.price %}
                 {% endfor %}
                 <tr>
                     <th scope="row"></th>
                     <td colspan="2">Podsumowanie:</td>
-                    <td>20 (zł)</td>
+                    <td>{{ sum }}zł</td>
                     <td></td>
                 </tr>
                 </tbody>
