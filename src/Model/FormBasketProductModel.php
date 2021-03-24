@@ -5,22 +5,21 @@ namespace App\Model;
 
 class FormBasketProductModel
 {
-
-    private int $count;
+    private int $amount;
 
     /**
      * @return int
      */
-    public function getCount(): int
+    public function getAmount(): int
     {
-        return $this->count;
+        return $this->amount;
     }
 
     /**
      * @param int $count
      */
-    public function setCount(int $count): void
+    public function setAmount(int $count): void
     {
-        $this->count = $count;
+        $this->amount = $count;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Order;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,12 +17,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OrderRepository extends ServiceEntityRepository
 {
+    /**
+     * OrderRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Order::class);
     }
 
-    public function findAllOrdersForUser(User $user)
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function findAllOrdersForUser(User $user): array
     {
         return $this->createQueryBuilder('o')
             ->select('o')
@@ -31,6 +41,11 @@ class OrderRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @param Order $order
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Order $order): void
     {
         $this->_em->persist($order);

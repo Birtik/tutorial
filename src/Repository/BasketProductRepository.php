@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\BasketProduct;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,12 +17,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BasketProductRepository extends ServiceEntityRepository
 {
+    /**
+     * BasketProductRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, BasketProduct::class);
     }
 
-    public function findAllProductsForUser(User $user)
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function findAllBasketProductsForUser(User $user): array
     {
         return $this->createQueryBuilder('i')
             ->select('i', 'b','p')
@@ -33,12 +43,22 @@ class BasketProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param BasketProduct $basketProduct
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(BasketProduct $basketProduct): void
     {
         $this->_em->persist($basketProduct);
         $this->_em->flush();
     }
 
+    /**
+     * @param BasketProduct $basketProduct
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function delete(BasketProduct $basketProduct): void
     {
         $this->_em->remove($basketProduct);

@@ -7,9 +7,8 @@ use App\Entity\User;
 use App\Event\UserRegisteredEvent;
 use App\Form\RegisterType;
 use App\Repository\TokenRepository;
-use App\Security\LoginFormAuthenticator;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,8 +23,10 @@ class RegistrationController extends AbstractController
     private UserPasswordEncoderInterface $passwordEncoder;
     private EntityManagerInterface $em;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em)
-    {
+    public function __construct(
+        UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $em
+    ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $em;
     }
@@ -42,6 +43,7 @@ class RegistrationController extends AbstractController
         $newUser = new User();
         $form = $this->createForm(RegisterType::class, $newUser);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser->setPassword(
                 $this->passwordEncoder->encodePassword(
@@ -87,15 +89,17 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/confirm/email/{value}", name="app_confirm_email")
      * @param TokenRepository $tokenRepository
-     * @param LoginFormAuthenticator $loginFormAuthenticator
      * @param string $value
      * @return RedirectResponse
+     * @throws NonUniqueResultException
      */
-    public function confirmEmail(TokenRepository $tokenRepository,LoginFormAuthenticator $loginFormAuthenticator, string $value): RedirectResponse
-    {
+    public function confirmEmail(
+        TokenRepository $tokenRepository,
+        string $value
+    ): RedirectResponse {
         $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
 
-        if ($token === null || $token->getExpiredAt() < (new DateTimeImmutable())) {
+        if ($token === null || $token->getExpiredAt() < (new \DateTime())) {
             $this->addFlash(
                 'notice',
                 'Token wygasł'
@@ -104,7 +108,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $token->setUsedAt(new DateTimeImmutable());
+        $token->setUsedAt(new \DateTime());
         $user = $token->getUser();
         $user->setEnabled(true);
         $this->em->flush();

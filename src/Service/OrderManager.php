@@ -6,9 +6,13 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Factory\OrderFactory;
-use App\Factory\OrderProductFactory;
 use App\Repository\BasketProductRepository;
+use App\Repository\BasketRepository;
 use App\Repository\OrderRepository;
+use DateTime;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class OrderManager
 {
@@ -16,14 +20,11 @@ class OrderManager
      * @var BasketProductRepository
      */
     private BasketProductRepository $basketProductRepository;
+
     /**
      * @var OrderFactory
      */
     private OrderFactory $orderFactory;
-    /**
-     * @var OrderProductFactory
-     */
-    private OrderProductFactory $orderProductFactory;
 
     /**
      * @var OrderRepository
@@ -31,61 +32,64 @@ class OrderManager
     private OrderRepository $orderRepository;
 
     /**
-     * @var SerializerManager
+     * @var BasketRepository
      */
-    private SerializerManager $serializerManager;
+    private BasketRepository $basketRepository;
 
     /**
      * OrderManager constructor.
-     * @param SerializerManager $serializerManager
      * @param BasketProductRepository $basketProductRepository
+     * @param BasketRepository $basketRepository
      * @param OrderRepository $orderRepository
      * @param OrderFactory $orderFactory
-     * @param OrderProductFactory $orderProductFactory
      */
     public function __construct(
-        SerializerManager $serializerManager,
         BasketProductRepository $basketProductRepository,
+        BasketRepository $basketRepository,
         OrderRepository $orderRepository,
-        OrderFactory $orderFactory,
-        OrderProductFactory $orderProductFactory
+        OrderFactory $orderFactory
     ) {
         $this->basketProductRepository = $basketProductRepository;
         $this->orderRepository = $orderRepository;
-        $this->orderProductFactory = $orderProductFactory;
+        $this->basketRepository = $basketRepository;
         $this->orderFactory = $orderFactory;
-        $this->serializerManager = $serializerManager;
     }
 
-    public function submitOrder(User $user): void
+    /**
+     * @param User $user
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function createOrder(User $user): void
     {
-        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user);
-        $orderProducts = [];
+        $basketProducts = $this->basketProductRepository->findAllBasketProductsForUser($user);
 
+        $orderProducts = [];
         foreach ($basketProducts as $item) {
             $product = $item->getProduct();
-            $orderProduct = $this->orderProductFactory->create(
-                $product->getName(),
-                $item->getAmount(),
-                $product->getPrice() * 100
-            );
-            $orderProducts[] = $orderProduct;
+            $orderProducts[] = [
+                'productName' => $product->getName(),
+                'amount' => $product->getAmount(),
+                'price' => $product->getPrice() * 100,
+            ];
         }
-
-        $items = $this->serializerManager->serializer($orderProducts);
-
-        $order = $this->orderFactory->create($user, $items);
+        $order = $this->orderFactory->create($user, $orderProducts);
         $this->orderRepository->save($order);
     }
 
-    public function clearBasket(User $user): void
+    /**
+     * @param User $user
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws NonUniqueResultException
+     */
+    public function clearUserBasket(User $user): void
     {
-        $basketProducts = $this->basketProductRepository->findAllProductsForUser($user);
-        $basket = $basketProducts[0]->getBasket();
-        $basket->setDeletedAt(new \DateTime());
+        $basket = $this->basketRepository->findBasketWithProductsForUser($user);
 
-        foreach($basketProducts as $basketProduct)
-        {
+        $basket->setDeletedAt(new DateTime());
+        $basketProducts = $basket->getBasketProducts();
+        foreach ($basketProducts as $basketProduct) {
             $this->basketProductRepository->delete($basketProduct);
         }
     }

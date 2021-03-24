@@ -18,7 +18,7 @@ class BasketProduct
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Basket::class)
+     * @ORM\ManyToOne(targetEntity=Basket::class, inversedBy="basketProducts")
      * @ORM\JoinColumn(nullable=false)
      */
     private Basket $basket;
