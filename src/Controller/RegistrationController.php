@@ -3,10 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Token;
-use App\Entity\User;
 use App\Event\UserRegisteredEvent;
+use App\Factory\AgreementFactory;
+use App\Factory\UserFactory;
 use App\Form\RegisterType;
+use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
+use App\Service\AgreementsManager;
+use App\Service\UserRegisterManager;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -20,15 +25,37 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private UserPasswordEncoderInterface $passwordEncoder;
+
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $em;
+
+    /**
+     * @var UserFactory
+     */
+    private UserFactory $userFactory;
+
+    /**
+     * @var AgreementFactory
+     */
+    private AgreementFactory $agreementFactory;
+
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserFactory $userFactory,
+        AgreementFactory $agreementFactory
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $em;
+        $this->userFactory = $userFactory;
+        $this->agreementFactory = $agreementFactory;
     }
 
     /**
@@ -40,25 +67,28 @@ class RegistrationController extends AbstractController
      */
     public function registration(Request $request, EventDispatcherInterface $dispatcher): Response
     {
-        $newUser = new User();
-        $form = $this->createForm(RegisterType::class, $newUser);
+        $registeredUserModel = new RegisterUserModel();
+        $form = $this->createForm(RegisterType::class, $registeredUserModel);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $newUser->setPassword(
+            $user = $this->userFactory->createUserFromRegisterUserModel($registeredUserModel);
+            $agreement = $this->agreementFactory->createAgreementFromRegisterUserModel($registeredUserModel, $user);
+            $user->setPassword(
                 $this->passwordEncoder->encodePassword(
-                    $newUser,
-                    $newUser->getPassword()
+                    $user,
+                    $user->getPassword()
                 )
             );
 
             try {
                 $this->em->beginTransaction();
-                $this->em->persist($newUser);
+                $this->em->persist($user);
+                $this->em->persist($agreement);
                 $this->em->flush();
 
-                $event = new UserRegisteredEvent($newUser);
+                $event = new UserRegisteredEvent($user);
                 $dispatcher->dispatch($event, UserRegisteredEvent::NAME);
+
                 $this->em->flush();
                 $this->em->commit();
             } catch (Exception $exception) {
@@ -99,7 +129,7 @@ class RegistrationController extends AbstractController
     ): RedirectResponse {
         $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
 
-        if ($token === null || $token->getExpiredAt() < (new \DateTime())) {
+        if ($token === null || $token->getExpiredAt() < (new DateTime())) {
             $this->addFlash(
                 'notice',
                 'Token wygasł'
@@ -107,8 +137,7 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_login');
         }
-
-        $token->setUsedAt(new \DateTime());
+        $token->setUsedAt(new DateTime());
         $user = $token->getUser();
         $user->setEnabled(true);
         $this->em->flush();

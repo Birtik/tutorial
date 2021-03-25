@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Agreement;
 use App\Entity\Category;
 use App\Entity\Opinion;
 use App\Entity\Product;
@@ -47,6 +48,17 @@ class AppFixtures extends Fixture
             }
         }
 
+//        $agreement1 = Agreement::create('Czy zgadzasz się na to i tamto?',true);
+//        $manager->persist($agreement1);
+//        $manager->flush();
+//
+//        $agreement2 = Agreement::create('Czy zgadzasz się na to ale bez tamtego?',true);
+//        $manager->persist($agreement2);
+//        $manager->flush();
+//
+//        $agreement3 = Agreement::create('Czy masz na imię Pszemek?',false);
+//        $manager->persist($agreement3);
+//        $manager->flush();
 
 
 

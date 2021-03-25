@@ -23,10 +23,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\Email(
-     *      message = "Email '{{ value }}' nie jest poprawny!"
-     * )
-     * @AppAssert\ContainsRepeatEmail()
      */
     private string $email;
 
@@ -38,11 +34,7 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Assert\Regex(
-     *     pattern = "/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@#$%^&+=])(?=\S+$).{6,}$/",
-     *     message = "Niepoprawne hasło"
-     * )
-     */
+    */
     private string $password;
 
     /**
@@ -61,6 +53,17 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private bool $enabled = false;
+
+
+    public static function create(string $email, string $password, string $firstName, string $lastName): User
+    {
+        $obj = new self();
+        $obj->email = $email;
+        $obj->password = $password;
+        $obj->firstName = $firstName;
+        $obj->lastName = $lastName;
+        return $obj;
+    }
 
     public function getId(): int
     {
