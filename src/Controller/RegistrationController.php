@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Event\UserRegisteredEvent;
 use App\Form\RegisterType;
 use App\Repository\TokenRepository;
+use App\Service\AgreementsManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -22,13 +23,16 @@ class RegistrationController extends AbstractController
 {
     private UserPasswordEncoderInterface $passwordEncoder;
     private EntityManagerInterface $em;
+    private AgreementsManager $agreementsManager;
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        AgreementsManager $agreementsManager
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $em;
+        $this->agreementsManager = $agreementsManager;
     }
 
     /**
@@ -59,6 +63,8 @@ class RegistrationController extends AbstractController
 
                 $event = new UserRegisteredEvent($newUser);
                 $dispatcher->dispatch($event, UserRegisteredEvent::NAME);
+                $this->agreementsManager->savingAgreementsByUser($form, $newUser);
+
                 $this->em->flush();
                 $this->em->commit();
             } catch (Exception $exception) {
@@ -107,7 +113,6 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_login');
         }
-
         $token->setUsedAt(new \DateTime());
         $user = $token->getUser();
         $user->setEnabled(true);
