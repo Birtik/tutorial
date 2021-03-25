@@ -4,11 +4,17 @@
 namespace App\Factory;
 
 use App\Entity\User;
+use App\Model\RegisterUserModel;
 
 class UserFactory
 {
-    public function create(string $email, string $password, string $firstName, string $lastName): User
+    public function createUserFromRegisterUserModel(RegisterUserModel $registerUserModel): User
     {
-        return User::create($email, $password, $firstName, $lastName);
+        $userMail = $registerUserModel->getEmail();
+        $userPassword = $registerUserModel->getPassword();
+        $userFirstName = $registerUserModel->getFirstName();
+        $userLastName = $registerUserModel->getLastName();
+
+        return User::create($userMail, $userPassword, $userFirstName, $userLastName);
     }
 }

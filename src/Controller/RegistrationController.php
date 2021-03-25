@@ -2,16 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Agreement;
 use App\Entity\Token;
-use App\Entity\User;
 use App\Event\UserRegisteredEvent;
+use App\Factory\AgreementFactory;
 use App\Factory\UserFactory;
 use App\Form\RegisterType;
 use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
 use App\Service\AgreementsManager;
 use App\Service\UserRegisterManager;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -25,19 +25,37 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private UserPasswordEncoderInterface $passwordEncoder;
+
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $em;
 
-    private UserRegisterManager $userRegisterManager;
+    /**
+     * @var UserFactory
+     */
+    private UserFactory $userFactory;
+
+    /**
+     * @var AgreementFactory
+     */
+    private AgreementFactory $agreementFactory;
+
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         EntityManagerInterface $em,
-        UserRegisterManager $userRegisterManager
+        UserFactory $userFactory,
+        AgreementFactory $agreementFactory
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $em;
-        $this->userRegisterManager = $userRegisterManager;
+        $this->userFactory = $userFactory;
+        $this->agreementFactory = $agreementFactory;
     }
 
     /**
@@ -53,10 +71,8 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegisterType::class, $registeredUserModel);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $user = $this->userRegisterManager->setUserData($registeredUserModel);
-            $agreement = $this->userRegisterManager->setUserAgreement($registeredUserModel, $user);
-
+            $user = $this->userFactory->createUserFromRegisterUserModel($registeredUserModel);
+            $agreement = $this->agreementFactory->createAgreementFromRegisterUserModel($registeredUserModel, $user);
             $user->setPassword(
                 $this->passwordEncoder->encodePassword(
                     $user,
@@ -113,7 +129,7 @@ class RegistrationController extends AbstractController
     ): RedirectResponse {
         $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
 
-        if ($token === null || $token->getExpiredAt() < (new \DateTime())) {
+        if ($token === null || $token->getExpiredAt() < (new DateTime())) {
             $this->addFlash(
                 'notice',
                 'Token wygasł'
@@ -121,7 +137,7 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_login');
         }
-        $token->setUsedAt(new \DateTime());
+        $token->setUsedAt(new DateTime());
         $user = $token->getUser();
         $user->setEnabled(true);
         $this->em->flush();

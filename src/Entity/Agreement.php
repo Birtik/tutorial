@@ -33,7 +33,7 @@ class Agreement
     private \DateTimeInterface $updatedAt;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private User $user;
