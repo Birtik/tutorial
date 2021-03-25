@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Agreement;
 use App\Entity\Token;
 use App\Entity\User;
 use App\Event\UserRegisteredEvent;
+use App\Factory\UserFactory;
 use App\Form\RegisterType;
+use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
 use App\Service\AgreementsManager;
+use App\Service\UserRegisterManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -23,16 +27,17 @@ class RegistrationController extends AbstractController
 {
     private UserPasswordEncoderInterface $passwordEncoder;
     private EntityManagerInterface $em;
-    private AgreementsManager $agreementsManager;
+
+    private UserRegisterManager $userRegisterManager;
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         EntityManagerInterface $em,
-        AgreementsManager $agreementsManager
+        UserRegisterManager $userRegisterManager
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $em;
-        $this->agreementsManager = $agreementsManager;
+        $this->userRegisterManager = $userRegisterManager;
     }
 
     /**
@@ -44,26 +49,29 @@ class RegistrationController extends AbstractController
      */
     public function registration(Request $request, EventDispatcherInterface $dispatcher): Response
     {
-        $newUser = new User();
-        $form = $this->createForm(RegisterType::class, $newUser);
+        $registeredUserModel = new RegisterUserModel();
+        $form = $this->createForm(RegisterType::class, $registeredUserModel);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $newUser->setPassword(
+
+            $user = $this->userRegisterManager->setUserData($registeredUserModel);
+            $agreement = $this->userRegisterManager->setUserAgreement($registeredUserModel, $user);
+
+            $user->setPassword(
                 $this->passwordEncoder->encodePassword(
-                    $newUser,
-                    $newUser->getPassword()
+                    $user,
+                    $user->getPassword()
                 )
             );
 
             try {
                 $this->em->beginTransaction();
-                $this->em->persist($newUser);
+                $this->em->persist($user);
+                $this->em->persist($agreement);
                 $this->em->flush();
 
-                $event = new UserRegisteredEvent($newUser);
+                $event = new UserRegisteredEvent($user);
                 $dispatcher->dispatch($event, UserRegisteredEvent::NAME);
-                $this->agreementsManager->savingAgreementsByUser($form, $newUser);
 
                 $this->em->flush();
                 $this->em->commit();

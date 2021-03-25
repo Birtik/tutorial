@@ -18,22 +18,33 @@ class Agreement
     private int $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="boolean")
      */
-    private string $description;
+    private bool $legalAgreement;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private bool $isRequired;
+    private bool $newsletterAgreement;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTimeInterface $updatedAt;
 
-    public static function create(string $description, bool $isRequired): Agreement
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private User $user;
+
+    public static function create(bool $legalAgreement, bool $newsletterAgreement, User $user): Agreement
     {
         $obj = new self();
-        $obj->setDescription($description);
-        $obj->setIsRequired($isRequired);
-
+        $obj->legalAgreement = $legalAgreement;
+        $obj->newsletterAgreement = $newsletterAgreement;
+        $obj->user = $user;
+        $obj->updatedAt = new \DateTime();
         return $obj;
     }
 
@@ -42,26 +53,50 @@ class Agreement
         return $this->id;
     }
 
-    public function getDescription(): string
+    public function getLegalAgreement(): bool
     {
-        return $this->description;
+        return $this->legalAgreement;
     }
 
-    public function setDescription(string $description): self
+    public function setLegalAgreement(bool $legalAgreement): self
     {
-        $this->description = $description;
+        $this->legalAgreement = $legalAgreement;
 
         return $this;
     }
 
-    public function getIsRequired(): bool
+    public function getNewsletterAgreement(): bool
     {
-        return $this->isRequired;
+        return $this->newsletterAgreement;
     }
 
-    public function setIsRequired(bool $isRequired): self
+    public function setNewsletterAgreement(bool $newsletterAgreement): self
     {
-        $this->isRequired = $isRequired;
+        $this->newsletterAgreement = $newsletterAgreement;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): \DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
