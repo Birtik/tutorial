@@ -38,7 +38,7 @@ class RegisterType extends AbstractType
                 'legalAgreement',
                 CheckboxType::class,
                 [
-                    'label' => 'Wyrażam zgodę...',
+                    'label' => 'Akceptuję Regulamin sklepu i zapoznałem się z Polityką Prywatności',
                     'required' => true
                 ]
             )
@@ -46,7 +46,7 @@ class RegisterType extends AbstractType
                 'newsletterAgreement',
                 CheckboxType::class,
                 [
-                    'label' => 'Wyrażam zgodę na...',
+                    'label' => 'Chcę otrzymywać newsletter i komunikację marketingową od TutorialSklep',
                     'required' => false
                 ]
             );
