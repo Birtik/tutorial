@@ -133,14 +133,15 @@ class RegistrationController extends AbstractController
         Request $request,
         TokenRepository $tokenRepository,
         string $value
-    ): ?Response {
-        $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
+    ): Response {
+        $token = $tokenRepository->findTokenWithUser($value, Token::TYPE_REGISTER);
 
         if ($token === null || $token->getExpiredAt() < (new DateTime())) {
             $this->addFlash(
                 'notice',
                 'Token wygasł'
             );
+
             return $this->redirectToRoute('app_login');
         }
         $token->setUsedAt(new DateTime());
