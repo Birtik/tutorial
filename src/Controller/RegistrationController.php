@@ -9,6 +9,7 @@ use App\Factory\UserFactory;
 use App\Form\RegisterType;
 use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
+use App\Security\LoginFormAuthenticator;
 use App\Service\AgreementsManager;
 use App\Service\UserRegisterManager;
 use DateTime;
@@ -17,11 +18,11 @@ use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 class RegistrationController extends AbstractController
 {
@@ -120,16 +121,22 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route("/confirm/email/{value}", name="app_confirm_email")
+     * @param LoginFormAuthenticator $authenticator
+     * @param GuardAuthenticatorHandler $guardHandler
+     * @param Request $request
      * @param TokenRepository $tokenRepository
      * @param string $value
-     * @return RedirectResponse
+     * @return Response
      * @throws NonUniqueResultException
      */
     public function confirmEmail(
+        LoginFormAuthenticator $authenticator,
+        GuardAuthenticatorHandler $guardHandler,
+        Request $request,
         TokenRepository $tokenRepository,
         string $value
-    ): RedirectResponse {
-        $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
+    ): Response {
+        $token = $tokenRepository->findTokenWithUser($value, Token::TYPE_REGISTER);
 
         if ($token === null || $token->getExpiredAt() < (new DateTime())) {
             $this->addFlash(
@@ -149,6 +156,11 @@ class RegistrationController extends AbstractController
             'Konto zostało aktywowane. Witamy!'
         );
 
-        return $this->redirectToRoute('app_login');
+        return $guardHandler->authenticateUserAndHandleSuccess(
+            $user,
+            $request,
+            $authenticator,
+            'main'
+        );
     }
 }
