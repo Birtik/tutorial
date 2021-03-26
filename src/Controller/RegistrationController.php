@@ -70,7 +70,9 @@ class RegistrationController extends AbstractController
         $registeredUserModel = new RegisterUserModel();
         $form = $this->createForm(RegisterType::class, $registeredUserModel);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+
             $user = $this->userFactory->createUserFromRegisterUserModel($registeredUserModel);
             $agreement = $this->agreementFactory->createAgreementFromRegisterUserModel($registeredUserModel, $user);
             $user->setPassword(
