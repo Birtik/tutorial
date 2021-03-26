@@ -25,7 +25,11 @@ class AppFixtures extends Fixture
         $faker = Faker\Factory::create();
 
         for ($i = 1; $i < 11; $i++) {
-            $category = Category::create($faker->name);
+
+            $fakerName = $faker->name;
+            $fakerCode = str_replace(' ','-',$fakerName);
+
+            $category = Category::create($fakerName,$fakerCode);
             $manager->persist($category);
 
             $categories[] = $category;

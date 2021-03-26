@@ -39,9 +39,7 @@ class ProductController extends AbstractController
      */
     public function productList(string $category): Response
     {
-        $originalCategoryName = str_replace('-', ' ', $category);
-
-        $products = $this->productRepository->findAllByCategory($originalCategoryName);
+        $products = $this->productRepository->findAllByCategory($category);
         $categories = $this->categoryRepository->findAll();
 
         return $this->render(

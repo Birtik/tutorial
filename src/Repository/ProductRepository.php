@@ -31,7 +31,7 @@ class ProductRepository extends ServiceEntityRepository
      * @return Product|null
      * @throws NonUniqueResultException
      */
-    public function findWithCategory($id): ?Product
+    public function findWithCategory(int $id): ?Product
     {
         return $this->createQueryBuilder('p')
             ->select('p','c','o')
@@ -45,12 +45,12 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllByCategory($category): array
+    public function findAllByCategory(string $category): array
     {
         return $this->createQueryBuilder('p')
             ->select('p','c')
             ->join('p.category', 'c')
-            ->where('c.name = :category')
+            ->where('c.code = :category')
             ->setParameter(':category',$category)
             ->orderBy('p.id', 'ASC')
             ->getQuery()

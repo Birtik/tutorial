@@ -24,7 +24,7 @@ class BasketFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $category = Category::create("Koszyk");
+        $category = Category::create("Koszyk",'Koszyk');
         $manager->persist($category);
 
         $product = Product::create(
