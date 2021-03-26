@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
+{% import "product-item.html.twig" as item %}
 {% block title %}Hello MainController!{% endblock %}
 {% block body %}
-    <div class="example-wrapper">
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <a href="{{ path('app_product_list') }}">
-                <button class="btn btn-primary" type="button">Przejdź do sklepu</button>
-            </a>
+    <div class="album py-5 bg-light">
+        <div class="container">
+
+            <div class="row row-cols-md-3 g-3">
+                {% for product in products %}
+                    {{ item.input(product.id, product.name,product.description, product.category, product.icon) }}
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

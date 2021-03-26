@@ -9,8 +9,6 @@ use App\Factory\UserFactory;
 use App\Form\RegisterType;
 use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
-use App\Service\AgreementsManager;
-use App\Service\UserRegisterManager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -127,15 +125,15 @@ class RegistrationController extends AbstractController
         TokenRepository $tokenRepository,
         string $value
     ): RedirectResponse {
-        $token = $tokenRepository->findWithUser($value, Token::TYPE_REGISTER);
+        $token = $tokenRepository->findTokenWithUser($value, Token::TYPE_REGISTER);
 
         if ($token === null || $token->getExpiredAt() < (new DateTime())) {
             $this->addFlash(
-                'notice',
-                'Token wygasł'
+                'warning',
+                'Token has expired'
             );
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('main');
         }
         $token->setUsedAt(new DateTime());
         $user = $token->getUser();
@@ -147,6 +145,6 @@ class RegistrationController extends AbstractController
             'Konto zostało aktywowane. Witamy!'
         );
 
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('main');
     }
 }
