@@ -9,17 +9,20 @@ use App\Factory\UserFactory;
 use App\Form\RegisterType;
 use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
+use App\Security\LoginFormAuthenticator;
+use App\Service\AgreementsManager;
+use App\Service\UserRegisterManager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 class RegistrationController extends AbstractController
 {
@@ -68,7 +71,9 @@ class RegistrationController extends AbstractController
         $registeredUserModel = new RegisterUserModel();
         $form = $this->createForm(RegisterType::class, $registeredUserModel);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+
             $user = $this->userFactory->createUserFromRegisterUserModel($registeredUserModel);
             $agreement = $this->agreementFactory->createAgreementFromRegisterUserModel($registeredUserModel, $user);
             $user->setPassword(
@@ -116,24 +121,30 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route("/confirm/email/{value}", name="app_confirm_email")
+     * @param LoginFormAuthenticator $authenticator
+     * @param GuardAuthenticatorHandler $guardHandler
+     * @param Request $request
      * @param TokenRepository $tokenRepository
      * @param string $value
-     * @return RedirectResponse
+     * @return Response
      * @throws NonUniqueResultException
      */
     public function confirmEmail(
+        LoginFormAuthenticator $authenticator,
+        GuardAuthenticatorHandler $guardHandler,
+        Request $request,
         TokenRepository $tokenRepository,
         string $value
-    ): RedirectResponse {
+    ): Response {
         $token = $tokenRepository->findTokenWithUser($value, Token::TYPE_REGISTER);
 
         if ($token === null || $token->getExpiredAt() < (new DateTime())) {
             $this->addFlash(
-                'warning',
-                'Token has expired'
+                'notice',
+                'Token wygasł'
             );
 
-            return $this->redirectToRoute('main');
+            return $this->redirectToRoute('app_login');
         }
         $token->setUsedAt(new DateTime());
         $user = $token->getUser();
@@ -145,6 +156,11 @@ class RegistrationController extends AbstractController
             'Konto zostało aktywowane. Witamy!'
         );
 
-        return $this->redirectToRoute('main');
+        return $guardHandler->authenticateUserAndHandleSuccess(
+            $user,
+            $request,
+            $authenticator,
+            'main'
+        );
     }
 }
