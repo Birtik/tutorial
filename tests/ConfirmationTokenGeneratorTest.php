@@ -53,7 +53,7 @@ class ConfirmationTokenGeneratorTest extends TestCase
         self::assertInstanceOf(User::class, $token->getUser());
         self::assertSame(32, strlen($token->getValue()));
         self::assertSame($expectHash, $token->getValue());
-        self::assertSame((new \DateTime('2021-03-01'))->modify('+25 hours'), $token->getExpiredAt());
+        self::assertEquals((new \DateTime('2021-03-01'))->modify('+25 hours'), $token->getExpiredAt());
         self::assertSame(1, $token->getType());
     }
 
@@ -84,11 +84,9 @@ class ConfirmationTokenGeneratorTest extends TestCase
         $testGenerator = new ConfirmationTokenGenerator($entityManagerMock, $dateTimeProviderMock);
         $token = $testGenerator->generateTokenForUser($userMock);
 
-        self::assertInstanceOf(Token::class, $token);
-        self::assertInstanceOf(User::class, $token->getUser());
         self::assertSame(32, strlen($token->getValue()));
         self::assertSame($expectHash, $token->getValue());
-        self::assertSame((new \DateTime('2021-02-01'))->modify('+25 hours'), $token->getExpiredAt());
+        self::assertEquals((new \DateTime('2021-02-01'))->modify('+25 hours'), $token->getExpiredAt());
         self::assertSame(1, $token->getType());
     }
 }

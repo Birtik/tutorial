@@ -11,7 +11,6 @@ class OrderProductModelTest extends TestCase
     {
         $orderProductModel = OrderProductModel::create('Test product',12,150);
 
-        self::assertInstanceOf(OrderProductModel::class,$orderProductModel);
         self::assertSame('Test product',$orderProductModel->getProductName());
         self::assertSame(12,$orderProductModel->getAmount());
         self::assertSame(150,$orderProductModel->getPrice());

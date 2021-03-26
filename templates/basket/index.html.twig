@@ -27,7 +27,7 @@
                             <button type="button" class="btn btn-danger"><a href="{{ path('app_basket_delete', {'id': item.id}) }}">Usuń</a></button>
                         </td>
                     </tr>
-                    {% set sum = sum + item.product.price %}
+                    {% set sum = sum + (item.product.price * item.amount) %}
                 {% endfor %}
                 <tr>
                     <th scope="row"></th>

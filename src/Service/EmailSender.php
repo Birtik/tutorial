@@ -3,60 +3,65 @@
 namespace App\Service;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
 
-class EmailSender
+class EmailSender extends AbstractController
 {
     /**
-     * @var MailerInterface
+     * @var \Swift_Mailer
      */
-    private MailerInterface $mailer;
+    private \Swift_Mailer $swiftMailer;
 
+    /**
+     * @var string
+     */
     private string $from;
 
-    public function __construct(MailerInterface $mailer, string $from)
+    public function __construct(\Swift_Mailer $swiftMailer, string $from)
     {
-        $this->mailer = $mailer;
         $this->from = $from;
+        $this->swiftMailer = $swiftMailer;
     }
 
     /**
      * @param string $mail
      * @param string $value
-     * @throws TransportExceptionInterface
      */
     public function sendConfirmationEmail(string $mail, string $value): void
     {
-        $email = (new TemplatedEmail())
-            ->from($this->from)
-            ->to(new Address($mail))
-            ->subject('Miło Cię powitać!')
-            ->htmlTemplate('registration/email_template.html.twig')
-            ->context(
-                [
-                    'token' => $value,
-                ]
+        $message = (new \Swift_Message('Hello Email'))
+            ->setFrom($this->from)
+            ->setTo($mail)
+            ->setBody(
+                $this->renderView(
+                    'registration/email_template.html.twig',
+                    ['token' => $value]
+                ),
+                'text/html'
             );
 
-        $this->mailer->send($email);
+        $this->swiftMailer->send($message);
     }
 
     /**
      * @param string $mail
-     * @throws TransportExceptionInterface
      */
     public function sendDoubleRegistrationAlertEmail(string $mail): void
     {
-        $email = (new TemplatedEmail())
-            ->from($this->from)
-            ->to(new Address($mail))
-            ->subject('Ktoś próbował założyć konto na Twój adres email')
-            ->htmlTemplate('registration/email_template_alert.html.twig')
-             ;
+        $message = (new \Swift_Message('Hello Email'))
+            ->setFrom('send@example.com')
+            ->setTo('recipient@example.com')
+            ->setBody(
+                $this->renderView(
+                    'registration/email_template_alert.html.twig',
+                ),
+                'text/html'
+            );
 
-        $this->mailer->send($email);
+        $this->swiftMailer->send($message);
     }
 }
