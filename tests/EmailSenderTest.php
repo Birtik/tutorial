@@ -15,12 +15,12 @@ class EmailSenderTest extends TestCase
     public function testSend()
     {
         $to = "test@wp.pl";
-        $subject = "testSubject";
+        $subject = "Miło Cię powitać!";
         $template = "testTemplate";
         $token = "1234";
 
         $mailer = new EmailBuilder($to);
-        $email = $mailer->buildEmail($to,$subject,$template,$token);
+        $email = $mailer->buildConfirmationEmail($to,$token);
 
         $namedAddresses = $email->getTo();
 

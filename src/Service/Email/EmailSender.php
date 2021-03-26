@@ -35,29 +35,23 @@ class EmailSender
     }
 
     /**
-     * @param string $mail
+     * @param string $mailTo
      * @param string $value
      * @throws TransportExceptionInterface
      */
-    public function sendConfirmationEmail(string $mail, string $value): void
+    public function sendConfirmationEmail(string $mailTo, string $value): void
     {
-        $subject = 'Miło Cię powitać!';
-        $template = "email_template";
-
-        $email = $this->emailBuilder->buildEmail($mail, $subject, $template, $value);
+        $email = $this->emailBuilder->buildConfirmationEmail($mailTo, $value);
         $this->send($email);
     }
 
     /**
-     * @param string $mail
+     * @param string $mailTo
      * @throws TransportExceptionInterface
      */
-    public function sendDoubleRegistrationAlertEmail(string $mail): void
+    public function sendDoubleRegistrationAlertEmail(string $mailTo): void
     {
-        $subject = 'Ktoś próbował założyć konto na Twój adres email!';
-        $template = "email_template_alert";
-
-        $email = $this->emailBuilder->buildEmail($mail, $subject, $template,'');
+        $email = $this->emailBuilder->buildRepeatedUserEmail($mailTo);
         $this->send($email);
     }
 }
