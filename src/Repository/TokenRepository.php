@@ -30,7 +30,7 @@ class TokenRepository extends ServiceEntityRepository
      * @return Token|null
      * @throws NonUniqueResultException
      */
-    public function findWithUser(string $token, string $type): ?Token
+    public function findTokenWithUser(string $token, string $type): ?Token
     {
         return $this->createQueryBuilder('t')
             ->select('t', 'u')
