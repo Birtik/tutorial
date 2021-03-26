@@ -31,7 +31,7 @@ services:
 
     App\EventSubscriber\UserSubscriber: ~
 
-    App\Service\EmailSender:
+    App\Service\Email\EmailBuilder:
         arguments:
             $from: '%env(MAILER_SENDER)%'
 

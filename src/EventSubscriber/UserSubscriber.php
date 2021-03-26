@@ -4,8 +4,9 @@ namespace App\EventSubscriber;
 
 use App\Event\UserRegisteredEvent;
 use App\Service\ConfirmationTokenGenerator;
-use App\Service\EmailSender;
+use App\Service\Email\EmailSender;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class UserSubscriber implements EventSubscriberInterface
 {
@@ -24,6 +25,9 @@ class UserSubscriber implements EventSubscriberInterface
         $this->confirmationTokenGenerator = $confirmationTokenGenerator;
     }
 
+    /**
+     * @return string[]
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -31,6 +35,10 @@ class UserSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param UserRegisteredEvent $event
+     * @throws TransportExceptionInterface
+     */
     public function onUserRegistered(UserRegisteredEvent $event): void
     {
         $user = $event->getUser();

@@ -3,16 +3,39 @@ declare(strict_types=1);
 
 namespace App\Service\Email;
 
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mime\Address;
 
 class EmailBuilder
 {
-    public function buildConfirmationEmail(string $to, string $from, string $token): TemplatedEmail
+    /**
+     * @var string
+     */
+    private string $from;
+
+    /**
+     * EmailBuilder constructor.
+     * @param string $from
+     */
+    public function __construct(string $from)
+    {
+        $this->from = $from;
+    }
+
+    /**
+     * @param string $to
+     * @param string $subject
+     * @param string $template
+     * @param string $token
+     * @return TemplatedEmail
+     */
+    public function buildEmail(string $to, string $subject, string $template, string $token): TemplatedEmail
     {
         return  (new TemplatedEmail())
-            ->from($from)
+            ->from($this->from)
             ->to(new Address($to))
-            ->subject('Miło Cię powitać!')
-            ->htmlTemplate('registration/email_template.html.twig')
+            ->subject($subject)
+            ->htmlTemplate("registration/{$template}.html.twig")
             ->context(
                 [
                     'token' => $token,

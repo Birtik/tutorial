@@ -10,7 +10,8 @@ use App\Form\RegisterType;
 use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
 use App\Security\LoginFormAuthenticator;
-use App\Service\EmailSender;
+use App\Service\AgreementsManager;
+use App\Service\UserRegisterManager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -45,20 +46,17 @@ class RegistrationController extends AbstractController
      */
     private AgreementFactory $agreementFactory;
 
-    private EmailSender $sender;
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         EntityManagerInterface $em,
         UserFactory $userFactory,
-        AgreementFactory $agreementFactory,
-        EmailSender $sender
+        AgreementFactory $agreementFactory
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $em;
         $this->userFactory = $userFactory;
         $this->agreementFactory = $agreementFactory;
-        $this->sender = $sender;
     }
 
     /**
@@ -164,15 +162,5 @@ class RegistrationController extends AbstractController
             $authenticator,
             'main'
         );
-    }
-
-    /**
-     * @Route("/sind", name="sind", methods={"GET"})
-     */
-    public function sendEmail(): Response
-    {
-        $this->sender->sendDoubleRegistrationAlertEmail('test@wp.pl');
-
-        return $this->redirectToRoute('main');
     }
 }

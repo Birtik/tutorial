@@ -3,7 +3,7 @@
 namespace App\Validator;
 
 use App\Repository\UserRepository;
-use App\Service\EmailSender;
+use App\Service\Email\EmailSender;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;

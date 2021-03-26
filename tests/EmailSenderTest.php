@@ -3,17 +3,28 @@
 
 namespace App\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EmailSenderTest extends WebTestCase
+use App\Service\Email\EmailBuilder;
+use App\Service\Email\EmailSender;
+use Symfony\Component\Mime\Address;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Mailer\MailerInterface;
+
+class EmailSenderTest extends TestCase
 {
     public function testSend()
     {
-        $client = static::createClient();
-        $client->enableProfiler();
-        $crawler = $client->request('GET', '/sind');
-        //$mailCollector = $client->getProfile()->getCollector('swiftmailer');
+        $to = "test@wp.pl";
+        $subject = "testSubject";
+        $template = "testTemplate";
+        $token = "1234";
 
-        //$this->assertSame(1, $mailCollector->getMessageCount());
+        $mailer = new EmailBuilder($to);
+        $email = $mailer->buildEmail($to,$subject,$template,$token);
+
+        $namedAddresses = $email->getTo();
+
+        self::assertSame($subject,$email->getSubject());
+        self::assertSame($to,$namedAddresses[0]->getAddress());
     }
 }
