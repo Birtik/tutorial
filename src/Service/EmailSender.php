@@ -12,19 +12,23 @@ use Symfony\Component\Mime\Address;
 class EmailSender extends AbstractController
 {
     /**
-     * @var \Swift_Mailer
+     * @var MailerInterface
      */
-    private \Swift_Mailer $swiftMailer;
+    private MailerInterface $mailer;
 
     /**
      * @var string
      */
     private string $from;
 
-    public function __construct(\Swift_Mailer $swiftMailer, string $from)
+    public function __construct(MailerInterface $mailer)
     {
-        $this->from = $from;
-        $this->swiftMailer = $swiftMailer;
+        $this->mailer = $mailer;
+    }
+
+    public function send(TemplatedEmail $email): void
+    {
+        $this->mailer->send($email);
     }
 
     /**
@@ -44,7 +48,7 @@ class EmailSender extends AbstractController
                 'text/html'
             );
 
-        $this->swiftMailer->send($message);
+        $this->mailer->send($message);
     }
 
     /**
@@ -62,6 +66,6 @@ class EmailSender extends AbstractController
                 'text/html'
             );
 
-        $this->swiftMailer->send($message);
+        $this->mailer->send($message);
     }
 }
