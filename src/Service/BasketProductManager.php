@@ -9,7 +9,6 @@ use App\Factory\BasketProductFactory;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
-use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -70,8 +69,18 @@ class BasketProductManager
             $basket = $this->basketFactory->create($user);
             $this->basketRepository->save($basket);
         }
-        $basketProduct = $this->basketProductFactory->create($basket, $product, (int)$count);
-        $this->basketProductRepository->save($basketProduct);
+
+        $sameBasketProduct = $this->basketProductRepository->findOneBy(['product' => $product]);
+        if (null === $sameBasketProduct) {
+            $basketProduct = $this->basketProductFactory->create($basket, $product, (int)$count);
+            $this->basketProductRepository->save($basketProduct);
+        } else {
+            $currentBasketProductAmount = $sameBasketProduct->getAmount();
+            $sameBasketProduct->setAmount($currentBasketProductAmount + (int)$count);
+            $sameBasketProduct->setUpdatedAt(new \DateTime());
+            $this->basketProductRepository->save($sameBasketProduct);
+        }
+
         $product->setAmount($product->getAmount() - (int)$count);
         $this->productRepository->save($product);
     }
@@ -82,18 +91,18 @@ class BasketProductManager
      */
     public function clearAllUnusedBasket(): void
     {
-        $unacceptableDateTime = new DateTime();
+        $unacceptableDateTime = new \DateTime();
         $unacceptableDateTime->modify('-48 hours');
         $baskets = $this->basketRepository->findAllUnusedBasket($unacceptableDateTime);
 
         foreach ($baskets as $basket) {
-            $basket->setDeletedAt(new DateTime());
+            $basket->setDeletedAt(new \DateTime());
             $basketProducts = $basket->getBasketProducts();
             foreach ($basketProducts as $basketProduct) {
                 $product = $basketProduct->getProduct();
                 $basketProductAmount = $basketProduct->getAmount();
                 $productAmount = $product->getAmount();
-                $product->setAmount($productAmount+$basketProductAmount);
+                $product->setAmount($productAmount + $basketProductAmount);
                 $this->basketProductRepository->delete($basketProduct);
             }
         }
