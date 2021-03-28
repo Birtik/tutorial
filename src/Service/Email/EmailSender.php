@@ -3,7 +3,6 @@
 namespace App\Service\Email;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 
@@ -29,7 +28,7 @@ class EmailSender
      * @param TemplatedEmail $email
      * @throws TransportExceptionInterface
      */
-    public function send(TemplatedEmail $email): void
+    public function sendMail(TemplatedEmail $email): void
     {
         $this->mailer->send($email);
     }
@@ -42,7 +41,7 @@ class EmailSender
     public function sendConfirmationEmail(string $mailTo, string $value): void
     {
         $email = $this->emailBuilder->buildConfirmationEmail($mailTo, $value);
-        $this->send($email);
+        $this->sendMail($email);
     }
 
     /**
@@ -52,6 +51,6 @@ class EmailSender
     public function sendDoubleRegistrationAlertEmail(string $mailTo): void
     {
         $email = $this->emailBuilder->buildRepeatedUserEmail($mailTo);
-        $this->send($email);
+        $this->sendMail($email);
     }
 }
