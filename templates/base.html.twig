@@ -42,7 +42,9 @@
             <div class="col-lg-6 col-md-8 mx-auto">
                 <div class="mb-3">
                     {% if (app.request.attributes.get('_route') == 'app_product_list') or (app.request.attributes.get('_route') == 'main')%}
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Wyszukaj">
+                        {{ form_start(form) }}
+                        {{ form_widget(form.productName) }}
+                        {{ form_end(form) }}
                     {% elseif app.request.attributes.get('_route') == 'app_product_single' %}
                         <a href="{{ path('main') }}">Powrót do listy</a>
                     {% endif %}

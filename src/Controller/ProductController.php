@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\BasketProductType;
+use App\Form\SearchProductType;
 use App\Model\FormBasketProductModel;
+use App\Model\SearchProductModel;
 use App\Repository\CategoriesRepository;
 use App\Repository\ProductRepository;
 use App\Service\BasketProductManager;
@@ -33,18 +35,30 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/category/{category}", name="app_product_list", methods={"GET"})
+     * @Route("/product/category/{category}", name="app_product_list", methods={"GET","POST"})
+     * @param Request $request
+     * @param SearchProductModel $productModel
      * @param string $category
      * @return Response
      */
-    public function productList(string $category): Response
+    public function productList(Request $request, SearchProductModel $productModel, string $category): Response
     {
         $products = $this->productRepository->findAllByCategory($category);
         $categories = $this->categoryRepository->findAll();
 
+        $form = $this->createForm(SearchProductType::class, $productModel);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+
+            $productName = $productModel->getProductName();
+            $products = $this->productRepository->findAllByProductNameWithCategory($productName);
+        }
+
         return $this->render(
             'product/list.html.twig',
             [
+                'form' => $form->createView(),
                 'products' => $products,
                 'categories' => $categories,
             ]

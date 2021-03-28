@@ -73,6 +73,23 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string $productName
+     * @return array
+     */
+    public function findAllByProductNameWithCategory(string $productName): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p','c')
+            ->join('p.category', 'c')
+            ->where('p.name LIKE :name')
+            ->setParameter(':name','%'.$productName.'%')
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
      * @param Product $product
      * @throws ORMException
      * @throws OptimisticLockException

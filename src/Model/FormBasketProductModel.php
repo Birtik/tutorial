@@ -5,6 +5,9 @@ namespace App\Model;
 
 class FormBasketProductModel
 {
+    /**
+     * @var int
+     */
     private int $amount;
 
     /**
