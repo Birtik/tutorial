@@ -24,7 +24,7 @@
                         <td>{{ item.product.name }}</td>
                         <td>{{ item.product.price }}zł</td>
                         <td>
-                            <button type="button" class="btn btn-danger"><a href="{{ path('app_basket_delete', {'id': item.id}) }}">Usuń</a></button>
+                            <button type="button" class="btn btn-danger"><a href="{{ path('app_basket_product_delete', {'id': item.id}) }}">Usuń</a></button>
                         </td>
                     </tr>
                     {% set sum = sum + (item.product.price * item.amount) %}

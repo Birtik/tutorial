@@ -25,11 +25,9 @@ class BasketController extends AbstractController
 
     /**
      * @Route("/basket", name="app_basket", methods={"GET"})
-     * @param Request $request
-     * @param FormBasketProductModel $model
      * @return Response
      */
-    public function basket(Request $request, FormBasketProductModel $model): Response
+    public function basket(): Response
     {
         /** @var User $user $user */
         $user = $this->getUser();
@@ -44,18 +42,17 @@ class BasketController extends AbstractController
     }
 
     /**
-     * @Route("/basket/delete/{id}", name="app_basket_delete", methods={"GET"})
+     * @Route("/basket/product/delete/{id}", name="app_basket_product_delete", methods={"GET"})
      * @param $id
      * @return Response
      */
-    public function basketDelete($id): Response
+    public function basketProductDelete($id): Response
     {
         $basketProduct = $this->basketProductRepository->find($id);
 
         if (null === $basketProduct) {
             throw new NotFoundHttpException();
         }
-
         $product = $basketProduct->getProduct();
         $basketProductAmount = $basketProduct->getAmount();
         $productAmount = $product->getAmount();

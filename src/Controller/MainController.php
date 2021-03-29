@@ -37,14 +37,14 @@ class MainController extends AbstractController
     /**
      * @Route("/", name="main", methods={"GET","POST"})
      * @param Request $request
-     * @param SearchProductModel $productModel
      * @return Response
      */
-    public function index(Request $request, SearchProductModel $productModel): Response
+    public function index(Request $request): Response
     {
         $products = $this->productRepository->findAllWithCategory();
         $categories = $this->categoryRepository->findAll();
 
+        $productModel = new SearchProductModel();
         $form = $this->createForm(SearchProductType::class, $productModel);
         $form->handleRequest($request);
 
