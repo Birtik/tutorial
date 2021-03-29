@@ -9,10 +9,10 @@ class OrderProductModelTest extends TestCase
 {
     public function testFirstCreateOrderProductModel()
     {
-        $orderProductModel = OrderProductModel::create('Test product',12,150);
+        $orderProductModel = OrderProductModel::create('Test product', 12, 150);
 
-        self::assertSame('Test product',$orderProductModel->getProductName());
-        self::assertSame(12,$orderProductModel->getAmount());
-        self::assertSame(150,$orderProductModel->getPrice());
+        self::assertSame('Test product', $orderProductModel->getProductName());
+        self::assertSame(12, $orderProductModel->getAmount());
+        self::assertSame(150, $orderProductModel->getPrice());
     }
 }
