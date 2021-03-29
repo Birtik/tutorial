@@ -91,9 +91,9 @@ class BasketProductManager
             $basketProducts = $basket->getBasketProducts();
             foreach ($basketProducts as $basketProduct) {
                 $product = $basketProduct->getProduct();
-                $basketAmount = $basketProduct->getAmount();
+                $basketProductAmount = $basketProduct->getAmount();
                 $productAmount = $product->getAmount();
-                $product->setAmount($productAmount+$basketAmount);
+                $product->setAmount($productAmount+$basketProductAmount);
                 $this->basketProductRepository->delete($basketProduct);
             }
         }

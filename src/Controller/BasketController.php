@@ -51,10 +51,12 @@ class BasketController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        $product = $basketProduct->getProduct();
+        $basketProductAmount = $basketProduct->getAmount();
+        $productAmount = $product->getAmount();
+        $product->setAmount($productAmount+$basketProductAmount);
         $this->basketProductRepository->delete($basketProduct);
 
         return $this->redirectToRoute('app_basket');
     }
-
-
 }

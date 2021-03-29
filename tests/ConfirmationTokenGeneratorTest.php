@@ -22,10 +22,11 @@ class ConfirmationTokenGeneratorTest extends TestCase
             ->method('getCurrentTime')
             ->willReturn(5612);
 
+        $testDateTime = new \DateTime('2021-03-01');
         $dateTimeProviderMock
             ->expects(self::once())
             ->method('getCurrentDateTime')
-            ->willReturn(new \DateTime('2021-03-01'));
+            ->willReturn($testDateTime);
 
         $userMock = $this->getMockBuilder(User::class)->getMock();
         $userMock
@@ -49,11 +50,9 @@ class ConfirmationTokenGeneratorTest extends TestCase
         $testGenerator = new ConfirmationTokenGenerator($entityManagerMock, $dateTimeProviderMock);
         $token = $testGenerator->generateTokenForUser($userMock);
 
-        self::assertInstanceOf(Token::class, $token);
-        self::assertInstanceOf(User::class, $token->getUser());
         self::assertSame(32, strlen($token->getValue()));
         self::assertSame($expectHash, $token->getValue());
-        self::assertSame((new \DateTime('2021-03-01'))->modify('+25 hours'), $token->getExpiredAt());
+        self::assertSame($testDateTime, $token->getExpiredAt());
         self::assertSame(1, $token->getType());
     }
 
@@ -65,10 +64,11 @@ class ConfirmationTokenGeneratorTest extends TestCase
             ->method('getCurrentTime')
             ->willReturn(1234);
 
+        $testDateTime = new \DateTime('2021-02-01');
         $dateTimeProviderMock
             ->expects(self::once())
             ->method('getCurrentDateTime')
-            ->willReturn(new \DateTime('2021-02-01'));
+            ->willReturn($testDateTime);
 
         $userMock = $this->getMockBuilder(User::class)->getMock();
         $userMock
@@ -84,11 +84,9 @@ class ConfirmationTokenGeneratorTest extends TestCase
         $testGenerator = new ConfirmationTokenGenerator($entityManagerMock, $dateTimeProviderMock);
         $token = $testGenerator->generateTokenForUser($userMock);
 
-        self::assertInstanceOf(Token::class, $token);
-        self::assertInstanceOf(User::class, $token->getUser());
         self::assertSame(32, strlen($token->getValue()));
         self::assertSame($expectHash, $token->getValue());
-        self::assertSame((new \DateTime('2021-02-01'))->modify('+25 hours'), $token->getExpiredAt());
+        self::assertSame($testDateTime, $token->getExpiredAt());
         self::assertSame(1, $token->getType());
     }
 }

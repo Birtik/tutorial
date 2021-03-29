@@ -69,7 +69,7 @@ class OrderManager
             $product = $item->getProduct();
             $orderProducts[] = [
                 'productName' => $product->getName(),
-                'amount' => $product->getAmount(),
+                'amount' => $item->getAmount(),
                 'price' => $product->getPrice() * 100,
             ];
         }

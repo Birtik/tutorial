@@ -31,9 +31,9 @@ services:
 
     App\EventSubscriber\UserSubscriber: ~
 
-    App\Service\EmailSender:
+    App\Service\Email\EmailBuilder:
         arguments:
-            $from: '%env(MAILER_SENDER)%'
+            $defaultFrom: '%env(MAILER_SENDER)%'
 
 
     # add more service definitions when explicit configuration is needed
