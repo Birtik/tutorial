@@ -38,3 +38,4 @@ security:
           - { path: ^/user/profile, roles: ROLE_USER }
           - { path: ^/basket, roles: ROLE_USER }
           - { path: ^/submit/order, roles: ROLE_USER }
+          - { path: ^/admin, roles: ROLE_ADMIN }
