@@ -22,19 +22,25 @@ class AppFixtures extends Fixture
         $this->em = $em;
     }
 
+    public function slug(string $categoryName): string
+    {
+        $pattern = ['ą' => 'a', 'ó' => 'o', 'ł' => 'l', 'ż' => 'z', 'ź' => 'z', 'ń' => 'n', ' ' => '-'];
+        return strtolower(strtr($categoryName,$pattern));
+    }
+
     public function load(ObjectManager $manager)
     {
         $categories = [
-           0 => 'Kawa zborzowa',
-           1 => 'Kawa ziarnista',
-           2 => 'Kawa bezkofeinowa',
-           3 => 'Herbata czarna',
-           4 => 'Herbata owocowa',
-           5 => 'Akcesoria',
-           6 => 'Yerba Mate',
-           7 => 'Herbata ziołowa',
-           8 => 'Herbata ziołowa',
-           9 => 'Ekspresy',
+            0 => 'Kawa zborzowa',
+            1 => 'Kawa ziarnista',
+            2 => 'Kawa bezkofeinowa',
+            3 => 'Herbata czarna',
+            4 => 'Herbata owocowa',
+            5 => 'Akcesoria',
+            6 => 'Yerba Mate',
+            7 => 'Herbata ziołowa',
+            8 => 'Herbata Zielona',
+            9 => 'Ekspresy',
         ];
 
         $arrayCategories = [];
@@ -42,12 +48,9 @@ class AppFixtures extends Fixture
         $faker = Faker\Factory::create();
 
         for ($i = 0; $i < 10; $i++) {
-
             $categoryName = $categories[$i];
-
-            $fakerCode = str_replace(' ', '-', $categoryName);
-
-            $category = Category::create($categoryName, $fakerCode);
+            $categoryCode = $this->slug($categoryName);
+            $category = Category::create($categoryName, $categoryCode);
             $manager->persist($category);
 
             $arrayCategories[] = $category;
@@ -69,7 +72,6 @@ class AppFixtures extends Fixture
                 $manager->persist($opinion);
             }
         }
-
         $manager->flush();
     }
 }
