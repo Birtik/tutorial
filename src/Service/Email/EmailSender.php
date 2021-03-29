@@ -14,14 +14,14 @@ class EmailSender
     private MailerInterface $mailer;
 
     /**
-     * @var EmailBuilder
+     * @var Director
      */
-    private EmailBuilder $emailBuilder;
+    private Director $director;
 
-    public function __construct(MailerInterface $mailer, EmailBuilder $emailBuilder)
+    public function __construct(MailerInterface $mailer, Director $director)
     {
         $this->mailer = $mailer;
-        $this->emailBuilder = $emailBuilder;
+        $this->director = $director;
     }
 
     /**
@@ -40,7 +40,8 @@ class EmailSender
      */
     public function sendConfirmationEmail(string $mailTo, string $value): void
     {
-        $email = $this->emailBuilder->buildConfirmationEmail($mailTo, $value);
+        $emailBuilder = new EmailConfirmationBuilder();
+        $email = $this->director->build($emailBuilder,$mailTo, $value);
         $this->sendMail($email);
     }
 
@@ -50,7 +51,8 @@ class EmailSender
      */
     public function sendDoubleRegistrationAlertEmail(string $mailTo): void
     {
-        $email = $this->emailBuilder->buildRepeatedUserEmail($mailTo);
+        $emailBuilder = new EmailAlertBuilder();
+        $email = $this->director->build($emailBuilder,$mailTo);
         $this->sendMail($email);
     }
 }

@@ -2,23 +2,26 @@
 
 namespace App\Tests;
 
-use App\Service\Email\EmailBuilder;
+use App\Service\Email\Director;
+use App\Service\Email\EmailAlertBuilder;
+use App\Service\Email\EmailConfirmationBuilder;
 use App\Service\Email\EmailSender;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
-class EmaiTest extends TestCase
+class EmailTest extends TestCase
 {
-    public function testConfirmationEMailBuilder(): void
+    public function testConfirmationEmailBuilder(): void
     {
         $to = "testMailTo@wp.pl";
         $subject = "Miło Cię powitać!";
         $template = "registration/email_template.html.twig";
         $token = "1234";
 
-        $mailer = new EmailBuilder($to);
-        $email = $mailer->buildConfirmationEmail($to, $token);
+        $emailBuilder = new EmailConfirmationBuilder();
+        $email = (new Director('test@wp.pl'))->build($emailBuilder,$to, $token);
+
         $namedAddresses = $email->getTo();
         $context = $email->getContext();
         $contextToken = $context['token'];
@@ -36,8 +39,9 @@ class EmaiTest extends TestCase
         $subject = "Ktoś próbował założyć konto na Twój adres email!";
         $template = "registration/email_template_alert.html.twig";
 
-        $mailer = new EmailBuilder($to);
-        $email = $mailer->buildRepeatedUserEmail($to);
+        $emailBuilder = new EmailAlertBuilder();
+        $email = (new Director('test@wp.pl'))->build($emailBuilder,$to);
+
         $namedAddresses = $email->getTo();
         $htmlTemplate = $email->getHtmlTemplate();
 
@@ -46,15 +50,14 @@ class EmaiTest extends TestCase
         self::assertSame($template, $htmlTemplate);
     }
 
-    public function testSendingEmail(): void
+    public function testSendingEmails(): void
     {
         $to = "testMailTo@wp.pl";
         $token = "1234";
 
-        $buildMock = $this->getMockBuilder(EmailBuilder::class)
+        $buildMock = $this->getMockBuilder(Director::class)
             ->setConstructorArgs(['from@wp.pl'])->getMock();
-        $buildMock->expects(self::once())->method('buildConfirmationEmail')->willReturn(new TemplatedEmail());
-        $buildMock->expects(self::once())->method('buildRepeatedUserEmail')->willReturn(new TemplatedEmail());
+        $buildMock->expects(self::exactly(2))->method('build')->willReturn(new TemplatedEmail());
 
         $mailerInterfaceMock = $this->getMockBuilder(MailerInterface::class)->getMock();
         $mailerInterfaceMock->expects(self::exactly(2))->method('send');
