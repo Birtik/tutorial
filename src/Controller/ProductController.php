@@ -94,7 +94,6 @@ class ProductController extends AbstractController
             $category = $product->getCategory();
             $categoryCode = $category->getCode();
             $basketProductManager->addBasketProduct($user, $product, $model->getAmount());
-
             $this->addFlash('success','Product correctly added to basket');
 
             return $this->redirectToRoute('app_product_list', ['category' => $categoryCode]);
