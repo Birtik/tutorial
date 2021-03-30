@@ -31,14 +31,14 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $categories = [
-            0 => 'Kawa zborzowa',
-            1 => 'Kawa ziarnista',
-            2 => 'Kawa bezkofeinowa',
-            3 => 'Herbata czarna',
-            4 => 'Herbata owocowa',
+            0 => 'Kawa Zbożowa',
+            1 => 'Kawa Ziarnista',
+            2 => 'Kawa Bezkofeinowa',
+            3 => 'Herbata Czarna',
+            4 => 'Herbata Owocowa',
             5 => 'Akcesoria',
             6 => 'Yerba Mate',
-            7 => 'Herbata ziołowa',
+            7 => 'Herbata Ziołowa',
             8 => 'Herbata Zielona',
             9 => 'Ekspresy',
         ];
