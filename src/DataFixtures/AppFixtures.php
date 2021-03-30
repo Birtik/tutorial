@@ -22,25 +22,19 @@ class AppFixtures extends Fixture
         $this->em = $em;
     }
 
-    public function slug(string $categoryName): string
-    {
-        $pattern = ['ą' => 'a', 'ó' => 'o', 'ł' => 'l', 'ż' => 'z', 'ź' => 'z', 'ń' => 'n', ' ' => '-'];
-        return strtolower(strtr($categoryName,$pattern));
-    }
-
     public function load(ObjectManager $manager)
     {
         $categories = [
-            0 => 'Kawa Zbożowa',
-            1 => 'Kawa Ziarnista',
-            2 => 'Kawa Bezkofeinowa',
-            3 => 'Herbata Czarna',
-            4 => 'Herbata Owocowa',
-            5 => 'Akcesoria',
-            6 => 'Yerba Mate',
-            7 => 'Herbata Ziołowa',
-            8 => 'Herbata Zielona',
-            9 => 'Ekspresy',
+            ['name' => 'Kawa Zbożowa', 'code' => 'kawa-zbozowa'],
+            ['name' => 'Kawa Ziarnista', 'code' => 'kawa-ziarnista'],
+            ['name' => 'Kawa Bezkofeinowa', 'code' => 'kawa-bezkofeinowa'],
+            ['name' => 'Herbata Czarna', 'code' => 'herbata-czarna'],
+            ['name' => 'Herbata Owocowa', 'code' => 'herbata-owocowa'],
+            ['name' => 'Akcesoria', 'code' => 'akcesoria'],
+            ['name' => 'Yerba Mate', 'code' => 'yerba-mate'],
+            ['name' => 'Herbata Ziołowa', 'code' => 'herbata-ziolowa'],
+            ['name' => 'Herbata Zielona', 'code' => 'herbata-zielona'],
+            ['name' => 'Ekspresy', 'code' => 'ekspresy'],
         ];
 
         $arrayCategories = [];
@@ -48,8 +42,9 @@ class AppFixtures extends Fixture
         $faker = Faker\Factory::create();
 
         for ($i = 0; $i < 10; $i++) {
-            $categoryName = $categories[$i];
-            $categoryCode = $this->slug($categoryName);
+            $categoryPatern = $categories[$i];
+            $categoryName = $categoryPatern['name'];
+            $categoryCode = $categoryPatern['code'];
             $category = Category::create($categoryName, $categoryCode);
             $manager->persist($category);
 
@@ -73,5 +68,12 @@ class AppFixtures extends Fixture
             }
         }
         $manager->flush();
+    }
+
+    public function slug(string $categoryName): string
+    {
+        $pattern = ['ą' => 'a', 'ó' => 'o', 'ł' => 'l', 'ż' => 'z', 'ź' => 'z', 'ń' => 'n', ' ' => '-'];
+
+        return strtolower(strtr($categoryName, $pattern));
     }
 }

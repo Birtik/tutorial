@@ -6,23 +6,15 @@ use App\Entity\Basket;
 use App\Entity\BasketProduct;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Factory\BasketFactory;
 use App\Factory\BasketProductFactory;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class BasketProductManager
 {
-
-    private const SUBSTRACTION_ACTION = 1;
-
-    private const ADDITION_ACTION = 2;
-
-
     /**
      * @var BasketRepository
      */
@@ -78,7 +70,7 @@ class BasketProductManager
             $this->updateBasketProduct($basketProduct, $amount);
         }
 
-        $this->productManager->updateProductAmount($product, $amount, self::SUBSTRACTION_ACTION);
+        $this->productManager->decreaseProductAmount($product, $amount);
     }
 
     /**
@@ -136,7 +128,7 @@ class BasketProductManager
         foreach ($basketProducts as $basketProduct) {
             $product = $basketProduct->getProduct();
             $basketProductAmount = $basketProduct->getAmount();
-            $this->productManager->updateProductAmount($product,$basketProductAmount,self::ADDITION_ACTION);
+            $this->productManager->increaseProductAmount($product, $basketProductAmount);
             $this->basketProductRepository->delete($basketProduct);
         }
     }
