@@ -40,10 +40,15 @@ class ProductManager
      * @param int $amount
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnexpectedValueException
      */
     public function decreaseProductAmount(Product $product, int $amount): void
     {
-        $product->setAmount($product->getAmount() - $amount);
+        if ($amount < 1 ){
+            throw new UnexpectedValueException('Value must be greater then 0');
+        }
+
+        $product->setAmount($product->getAmount() + (-1) * $amount);
         $this->productRepository->save($product);
     }
 }

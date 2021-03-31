@@ -35,6 +35,9 @@ class BasketProductManager
      */
     private BasketManager $basketManager;
 
+    /**
+     * @var ProductManager
+     */
     private ProductManager $productManager;
 
     public function __construct(
@@ -62,15 +65,16 @@ class BasketProductManager
     public function addBasketProduct(User $user, Product $product, int $amount): void
     {
         $basket = $this->basketManager->getActiveBasket($user);
+        $this->productManager->decreaseProductAmount($product, $amount);
+        $basketProduct = $this->getBasketProduct($product);
 
-        $basketProduct = $this->basketProductRepository->findOneBy(['product' => $product]);
         if (null === $basketProduct) {
             $this->createBasketProduct($basket, $product, $amount);
-        } else {
-            $this->updateBasketProduct($basketProduct, $amount);
+
+            return;
         }
 
-        $this->productManager->decreaseProductAmount($product, $amount);
+        $this->updateBasketProduct($basketProduct, $amount);
     }
 
     /**
@@ -132,4 +136,14 @@ class BasketProductManager
             $this->basketProductRepository->delete($basketProduct);
         }
     }
+
+    /**
+     * @param Product $product
+     * @return BasketProduct
+     */
+    public function getBasketProduct(Product $product): ?BasketProduct
+    {
+        return $this->basketProductRepository->findOneBy(['product' => $product]);
+    }
+
 }
