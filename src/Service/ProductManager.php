@@ -40,12 +40,11 @@ class ProductManager
      * @param int $amount
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws UnexpectedValueException
      */
     public function decreaseProductAmount(Product $product, int $amount): void
     {
-        if ($amount < 1 ){
-            throw new UnexpectedValueException('Value must be greater then 0');
+        if ($amount < 1) {
+            throw new \InvalidArgumentException(sprintf('Amount value should be positive int. "%s" given.', $amount));
         }
 
         $product->setAmount($product->getAmount() + (-1) * $amount);
