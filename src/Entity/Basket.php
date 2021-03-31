@@ -6,6 +6,7 @@ use App\Repository\BasketRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=BasketRepository::class)
@@ -32,11 +33,13 @@ class Basket
 
     /**
      * @ORM\OneToMany(targetEntity=BasketProduct::class, mappedBy="basket")
+     * @Groups({"basket"})
      */
     private Collection $basketProducts;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"basket"})
      */
     private \DateTimeInterface $createdAt;
 

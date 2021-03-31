@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\BasketProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=BasketProductRepository::class)
@@ -25,22 +26,26 @@ class BasketProduct
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"basket"})
      */
     private int $amount;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"basket","list_product"})
      */
     private Product $product;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"basket"})
      */
     private \DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"basket"})
      */
     private \DateTimeInterface $updatedAt;
 

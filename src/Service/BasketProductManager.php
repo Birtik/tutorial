@@ -8,12 +8,14 @@ use App\Entity\Product;
 use App\Entity\User;
 use App\Factory\BasketFactory;
 use App\Factory\BasketProductFactory;
+use App\Model\BasketProductModel;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\HttpFoundation\Request;
 
 class BasketProductManager
 {
@@ -43,20 +45,30 @@ class BasketProductManager
      */
     private BasketManager $basketManager;
 
+    /**
+     * @var ProductManager
+     */
     private ProductManager $productManager;
+
+    /**
+     * @var SerializerManager
+     */
+    public SerializerManager $serializerManager;
 
     public function __construct(
         BasketRepository $basketRepository,
         BasketProductRepository $basketProductRepository,
         BasketProductFactory $basketProductFactory,
         BasketManager $basketManager,
-        ProductManager $productManager
+        ProductManager $productManager,
+        SerializerManager $serializerManager
     ) {
         $this->basketRepository = $basketRepository;
         $this->basketProductRepository = $basketProductRepository;
         $this->basketProductFactory = $basketProductFactory;
         $this->basketManager = $basketManager;
         $this->productManager = $productManager;
+        $this->serializerManager = $serializerManager;
     }
 
     /**
@@ -140,4 +152,23 @@ class BasketProductManager
             $this->basketProductRepository->delete($basketProduct);
         }
     }
+
+    /**
+     * @param User $user
+     * @param Request $request
+     * @throws \Doctrine\ORM\EntityNotFoundException
+     */
+    public function addBasketProductFromApi(User $user, Request $request): void
+    {
+        $content = $request->getContent();
+        $model = $this->serializerManager->deserializer($content,BasketProductModel::class);
+
+        $amount = $model->getAmount();
+        $productId = $model->getProductId();
+        $product = $this->productManager->getProduct($productId);
+
+        $this->addBasketProduct($user, $product, $amount);
+    }
+
+
 }

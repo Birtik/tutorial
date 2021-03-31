@@ -49,7 +49,7 @@ class ProductController extends AbstractController
         $form = $this->createForm(SearchProductType::class, $productModel);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $productName = $productModel->getProductName();
             $products = $this->productRepository->findAllByProductNameWithCategory($productName);
@@ -94,7 +94,7 @@ class ProductController extends AbstractController
             $category = $product->getCategory();
             $categoryCode = $category->getCode();
             $basketProductManager->addBasketProduct($user, $product, $model->getAmount());
-            $this->addFlash('success','Product correctly added to basket');
+            $this->addFlash('success', 'Product correctly added to basket');
 
             return $this->redirectToRoute('app_product_list', ['category' => $categoryCode]);
         }
@@ -108,5 +108,4 @@ class ProductController extends AbstractController
             ]
         );
     }
-
 }

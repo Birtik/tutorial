@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
@@ -39,5 +40,21 @@ class ProductManager
         }
 
         $this->productRepository->save($product);
+    }
+
+    /**
+     * @param int $id
+     * @return Product|null
+     * @throws EntityNotFoundException
+     */
+    public function getProduct(int $id): Product
+    {
+        $product = $this->productRepository->find($id);
+
+        if (null === $product){
+            throw new EntityNotFoundException('Product not found');
+        }
+
+        return $product;
     }
 }

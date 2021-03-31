@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CategoriesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CategoriesRepository::class)
@@ -19,11 +20,13 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list_category", "list_product"})
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list_category", "list_product"})
      */
     private string $code;
 
