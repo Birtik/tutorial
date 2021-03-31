@@ -43,7 +43,11 @@ class ProductManager
      */
     public function decreaseProductAmount(Product $product, int $amount): void
     {
-        $product->setAmount($product->getAmount() - $amount);
+        if ($amount < 1) {
+            throw new \InvalidArgumentException(sprintf('Amount value should be positive int. "%s" given.', $amount));
+        }
+
+        $product->setAmount($product->getAmount() + (-1) * $amount);
         $this->productRepository->save($product);
     }
 }

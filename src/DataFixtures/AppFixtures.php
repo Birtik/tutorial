@@ -24,7 +24,9 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $categories = [
+        $categories = [];
+        $faker = Faker\Factory::create();
+        $categoryDefinitions = [
             ['name' => 'Kawa Zbożowa', 'code' => 'kawa-zbozowa'],
             ['name' => 'Kawa Ziarnista', 'code' => 'kawa-ziarnista'],
             ['name' => 'Kawa Bezkofeinowa', 'code' => 'kawa-bezkofeinowa'],
@@ -37,23 +39,17 @@ class AppFixtures extends Fixture
             ['name' => 'Ekspresy', 'code' => 'ekspresy'],
         ];
 
-        $arrayCategories = [];
-
-        $faker = Faker\Factory::create();
-
         for ($i = 0; $i < 10; $i++) {
-            $categoryPatern = $categories[$i];
-            $categoryName = $categoryPatern['name'];
-            $categoryCode = $categoryPatern['code'];
-            $category = Category::create($categoryName, $categoryCode);
+            $definition = $categoryDefinitions[$i];
+            $category = Category::create($definition['name'], $definition['code']);
             $manager->persist($category);
 
-            $arrayCategories[] = $category;
+            $categories[] = $category;
         }
 
         for ($i = 1; $i < 101; $i++) {
             $product = Product::create(
-                $arrayCategories[$faker->numberBetween(1, 9)],
+                $categories[$faker->numberBetween(1, 9)],
                 $faker->name,
                 $faker->sentence(4),
                 $faker->numberBetween(1, 100),
@@ -68,12 +64,5 @@ class AppFixtures extends Fixture
             }
         }
         $manager->flush();
-    }
-
-    public function slug(string $categoryName): string
-    {
-        $pattern = ['ą' => 'a', 'ó' => 'o', 'ł' => 'l', 'ż' => 'z', 'ź' => 'z', 'ń' => 'n', ' ' => '-'];
-
-        return strtolower(strtr($categoryName, $pattern));
     }
 }

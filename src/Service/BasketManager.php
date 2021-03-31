@@ -42,13 +42,7 @@ class BasketManager
      */
     public function getActiveBasket(User $user): Basket
     {
-        $basket = $this->basketRepository->findActiveUserBasket($user);
-
-        if ($basket === null) {
-            return $this->createNewBasket($user);
-        }
-
-        return $basket;
+        return $this->basketRepository->findActiveUserBasket($user) ?? $this->createNewBasket($user);
     }
 
     /**
