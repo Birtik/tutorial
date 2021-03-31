@@ -1,0 +1,47 @@
+nelmio_api_doc:
+    documentation:
+        host: localhost
+        schemes: [http, https]
+        info:
+            title: Shop Tutorial API
+            description: API documentation
+            version: 1.0.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer {jwt}'
+                name: Authorization
+                in: header
+
+        paths:
+            /api/login:
+                post:
+                    tags:
+                        - Login
+                    description: Login into the api.
+                    produces:
+                        - application/json
+                    parameters:
+                        - name: user
+                          description: User to login
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              properties:
+                                  username:
+                                      type: string
+                                  password:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Login successful
+                            schema:
+                                type: object
+                                properties:
+                                    token:
+                                        type: string
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
