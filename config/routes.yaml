@@ -1,2 +1,8 @@
 api_login_check:
   path: /api/login
+
+dashboard:
+  path: /admin
+  controller: App\Controller\Admin\DashboardController::index
+
+

@@ -27,18 +27,28 @@ class ProductManager
     /**
      * @param Product $product
      * @param int $amount
-     * @param int $action
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function updateProductAmount(Product $product, int $amount, int $action): void
+    public function increaseProductAmount(Product $product, int $amount): void
     {
-        if ($action === 1){
-            $product->setAmount($product->getAmount() - $amount);
-        }else if ($action === 2){
-            $product->setAmount($product->getAmount() + $amount);
+        $product->setAmount($product->getAmount() + $amount);
+        $this->productRepository->save($product);
+    }
+
+    /**
+     * @param Product $product
+     * @param int $amount
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function decreaseProductAmount(Product $product, int $amount): void
+    {
+        if ($amount < 1) {
+            throw new \InvalidArgumentException(sprintf('Amount value should be positive int. "%s" given.', $amount));
         }
 
+        $product->setAmount($product->getAmount() + (-1) * $amount);
         $this->productRepository->save($product);
     }
 

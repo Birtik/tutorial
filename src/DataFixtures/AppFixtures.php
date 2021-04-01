@@ -22,43 +22,34 @@ class AppFixtures extends Fixture
         $this->em = $em;
     }
 
-    public function slug(string $categoryName): string
-    {
-        $pattern = ['ą' => 'a', 'ó' => 'o', 'ł' => 'l', 'ż' => 'z', 'ź' => 'z', 'ń' => 'n', ' ' => '-'];
-        return strtolower(strtr($categoryName,$pattern));
-    }
-
     public function load(ObjectManager $manager)
     {
-        $categories = [
-            0 => 'Kawa Zbożowa',
-            1 => 'Kawa Ziarnista',
-            2 => 'Kawa Bezkofeinowa',
-            3 => 'Herbata Czarna',
-            4 => 'Herbata Owocowa',
-            5 => 'Akcesoria',
-            6 => 'Yerba Mate',
-            7 => 'Herbata Ziołowa',
-            8 => 'Herbata Zielona',
-            9 => 'Ekspresy',
+        $categories = [];
+        $faker = Faker\Factory::create();
+        $categoryDefinitions = [
+            ['name' => 'Kawa Zbożowa', 'code' => 'kawa-zbozowa'],
+            ['name' => 'Kawa Ziarnista', 'code' => 'kawa-ziarnista'],
+            ['name' => 'Kawa Bezkofeinowa', 'code' => 'kawa-bezkofeinowa'],
+            ['name' => 'Herbata Czarna', 'code' => 'herbata-czarna'],
+            ['name' => 'Herbata Owocowa', 'code' => 'herbata-owocowa'],
+            ['name' => 'Akcesoria', 'code' => 'akcesoria'],
+            ['name' => 'Yerba Mate', 'code' => 'yerba-mate'],
+            ['name' => 'Herbata Ziołowa', 'code' => 'herbata-ziolowa'],
+            ['name' => 'Herbata Zielona', 'code' => 'herbata-zielona'],
+            ['name' => 'Ekspresy', 'code' => 'ekspresy'],
         ];
 
-        $arrayCategories = [];
-
-        $faker = Faker\Factory::create();
-
         for ($i = 0; $i < 10; $i++) {
-            $categoryName = $categories[$i];
-            $categoryCode = $this->slug($categoryName);
-            $category = Category::create($categoryName, $categoryCode);
+            $definition = $categoryDefinitions[$i];
+            $category = Category::create($definition['name'], $definition['code']);
             $manager->persist($category);
 
-            $arrayCategories[] = $category;
+            $categories[] = $category;
         }
 
         for ($i = 1; $i < 101; $i++) {
             $product = Product::create(
-                $arrayCategories[$faker->numberBetween(1, 9)],
+                $categories[$faker->numberBetween(1, 9)],
                 $faker->name,
                 $faker->sentence(4),
                 $faker->numberBetween(1, 100),

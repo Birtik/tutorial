@@ -34,7 +34,7 @@ services:
 
     App\Service\Email\EmailBuilder:
         arguments:
-            $from: '%env(MAILER_SENDER)%'
+            $defaultFrom: '%env(MAILER_SENDER)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
