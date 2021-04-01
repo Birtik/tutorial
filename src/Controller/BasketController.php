@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Model\FormBasketProductModel;
 use App\Repository\BasketProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +25,7 @@ class BasketController extends AbstractController
 
     /**
      * @Route("/basket", name="app_basket", methods={"GET"})
+     * @return Response
      */
     public function basket(): Response
     {
@@ -39,22 +42,21 @@ class BasketController extends AbstractController
     }
 
     /**
-     * @Route("/basket/delete/{id}", name="app_basket_delete", methods={"GET"})
+     * @Route("/basket/product/delete/{id}", name="app_basket_product_delete", methods={"GET"})
      * @param $id
      * @return Response
      */
-    public function basketDelete($id): Response
+    public function basketProductDelete($id): Response
     {
         $basketProduct = $this->basketProductRepository->find($id);
 
         if (null === $basketProduct) {
             throw new NotFoundHttpException();
         }
-
         $product = $basketProduct->getProduct();
         $basketProductAmount = $basketProduct->getAmount();
         $productAmount = $product->getAmount();
-        $product->setAmount($productAmount+$basketProductAmount);
+        $product->setAmount($productAmount + $basketProductAmount);
         $this->basketProductRepository->delete($basketProduct);
 
         return $this->redirectToRoute('app_basket');

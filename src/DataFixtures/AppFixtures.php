@@ -2,11 +2,9 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Agreement;
 use App\Entity\Category;
 use App\Entity\Opinion;
 use App\Entity\Product;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -14,6 +12,11 @@ use Faker;
 
 class AppFixtures extends Fixture
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $em;
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -23,13 +26,22 @@ class AppFixtures extends Fixture
     {
         $categories = [];
         $faker = Faker\Factory::create();
+        $categoryDefinitions = [
+            ['name' => 'Kawa Zbożowa', 'code' => 'kawa-zbozowa'],
+            ['name' => 'Kawa Ziarnista', 'code' => 'kawa-ziarnista'],
+            ['name' => 'Kawa Bezkofeinowa', 'code' => 'kawa-bezkofeinowa'],
+            ['name' => 'Herbata Czarna', 'code' => 'herbata-czarna'],
+            ['name' => 'Herbata Owocowa', 'code' => 'herbata-owocowa'],
+            ['name' => 'Akcesoria', 'code' => 'akcesoria'],
+            ['name' => 'Yerba Mate', 'code' => 'yerba-mate'],
+            ['name' => 'Herbata Ziołowa', 'code' => 'herbata-ziolowa'],
+            ['name' => 'Herbata Zielona', 'code' => 'herbata-zielona'],
+            ['name' => 'Ekspresy', 'code' => 'ekspresy'],
+        ];
 
-        for ($i = 1; $i < 11; $i++) {
-
-            $fakerName = $faker->name;
-            $fakerCode = str_replace(' ','-',$fakerName);
-
-            $category = Category::create($fakerName,$fakerCode);
+        for ($i = 0; $i < 10; $i++) {
+            $definition = $categoryDefinitions[$i];
+            $category = Category::create($definition['name'], $definition['code']);
             $manager->persist($category);
 
             $categories[] = $category;
@@ -37,35 +49,20 @@ class AppFixtures extends Fixture
 
         for ($i = 1; $i < 101; $i++) {
             $product = Product::create(
-                $categories[$faker->numberBetween(0,2)],
+                $categories[$faker->numberBetween(1, 9)],
                 $faker->name,
-                $faker->sentence(),
+                $faker->sentence(4),
                 $faker->numberBetween(1, 100),
                 '1',
-                $faker->numberBetween(1,50)
+                $faker->numberBetween(1, 50)
             );
             $manager->persist($product);
 
-            for ($j = 1; $j < mt_rand(2,10); $j++) {
+            for ($j = 1; $j < random_int(2, 10); $j++) {
                 $opinion = Opinion::create($product, $faker->sentence(), $faker->name, $faker->numberBetween(1, 10));
                 $manager->persist($opinion);
             }
         }
-
-//        $agreement1 = Agreement::create('Czy zgadzasz się na to i tamto?',true);
-//        $manager->persist($agreement1);
-//        $manager->flush();
-//
-//        $agreement2 = Agreement::create('Czy zgadzasz się na to ale bez tamtego?',true);
-//        $manager->persist($agreement2);
-//        $manager->flush();
-//
-//        $agreement3 = Agreement::create('Czy masz na imię Pszemek?',false);
-//        $manager->persist($agreement3);
-//        $manager->flush();
-
-
-
         $manager->flush();
     }
 }

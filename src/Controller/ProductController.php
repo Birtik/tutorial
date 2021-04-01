@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\BasketProductType;
+use App\Form\SearchProductType;
 use App\Model\FormBasketProductModel;
+use App\Model\SearchProductModel;
 use App\Repository\CategoriesRepository;
 use App\Repository\ProductRepository;
 use App\Service\BasketProductManager;
@@ -33,18 +35,30 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/category/{category}", name="app_product_list", methods={"GET"})
+     * @Route("/product/category/{category}", name="app_product_list", methods={"GET","POST"})
+     * @param Request $request
      * @param string $category
      * @return Response
      */
-    public function productList(string $category): Response
+    public function productList(Request $request, string $category): Response
     {
         $products = $this->productRepository->findAllByCategory($category);
         $categories = $this->categoryRepository->findAll();
 
+        $productModel = new SearchProductModel();
+        $form = $this->createForm(SearchProductType::class, $productModel);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+
+            $productName = $productModel->getProductName();
+            $products = $this->productRepository->findAllByProductNameWithCategory($productName);
+        }
+
         return $this->render(
             'product/list.html.twig',
             [
+                'form' => $form->createView(),
                 'products' => $products,
                 'categories' => $categories,
             ]
@@ -52,17 +66,15 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/{id}", name="app_product_single")
+     * @Route("/product/{id}", name="app_product_single", methods={"GET","POST"})
      * @param Request $request
      * @param BasketProductManager $basketProductManager
-     * @param FormBasketProductModel $model
      * @param $id
      * @return Response
      */
     public function productSingle(
         Request $request,
         BasketProductManager $basketProductManager,
-        FormBasketProductModel $model,
         $id
     ): Response {
         $product = $this->productRepository->findWithCategory($id);
@@ -72,6 +84,7 @@ class ProductController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        $model = new FormBasketProductModel();
         $form = $this->createForm(BasketProductType::class, $model, ['limit' => $product->getAmount()]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -79,12 +92,11 @@ class ProductController extends AbstractController
             /** @var User $user */
             $user = $this->getUser();
             $category = $product->getCategory();
-            $originalCategoryName = str_replace(' ', '-', $category->getName());
+            $categoryCode = $category->getCode();
             $basketProductManager->addBasketProduct($user, $product, $model->getAmount());
-
             $this->addFlash('success','Product correctly added to basket');
 
-            return $this->redirectToRoute('app_product_list', ['category' => $originalCategoryName]);
+            return $this->redirectToRoute('app_product_list', ['category' => $categoryCode]);
         }
 
         return $this->render(

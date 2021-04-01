@@ -49,7 +49,7 @@ class BasketRepository extends ServiceEntityRepository
      * @return Basket
      * @throws NonUniqueResultException
      */
-    public function findBasketWithProductsForUser(User $user): Basket
+    public function findBasketWithProductsForUser(User $user): ?Basket
     {
         return $this->createQueryBuilder('b')
             ->select('b', 'u', 'bp')

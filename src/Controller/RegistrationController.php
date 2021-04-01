@@ -10,8 +10,6 @@ use App\Form\RegisterType;
 use App\Model\RegisterUserModel;
 use App\Repository\TokenRepository;
 use App\Security\LoginFormAuthenticator;
-use App\Service\AgreementsManager;
-use App\Service\UserRegisterManager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;

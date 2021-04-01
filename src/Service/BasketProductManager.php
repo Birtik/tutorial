@@ -2,13 +2,13 @@
 
 namespace App\Service;
 
+use App\Entity\Basket;
+use App\Entity\BasketProduct;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Factory\BasketFactory;
 use App\Factory\BasketProductFactory;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
-use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
@@ -27,53 +27,91 @@ class BasketProductManager
     private BasketProductRepository $basketProductRepository;
 
     /**
-     * @var BasketFactory
-     */
-    private BasketFactory $basketFactory;
-
-    /**
      * @var BasketProductFactory
      */
     private BasketProductFactory $basketProductFactory;
 
     /**
-     * @var ProductRepository
+     * @var BasketManager
      */
-    private ProductRepository $productRepository;
+    private BasketManager $basketManager;
+
+    /**
+     * @var ProductManager
+     */
+    private ProductManager $productManager;
 
     public function __construct(
         BasketRepository $basketRepository,
         BasketProductRepository $basketProductRepository,
         BasketProductFactory $basketProductFactory,
-        BasketFactory $basketFactory,
-        ProductRepository $productRepository
+        BasketManager $basketManager,
+        ProductManager $productManager
     ) {
         $this->basketRepository = $basketRepository;
         $this->basketProductRepository = $basketProductRepository;
-        $this->basketFactory = $basketFactory;
         $this->basketProductFactory = $basketProductFactory;
-        $this->productRepository = $productRepository;
+        $this->basketManager = $basketManager;
+        $this->productManager = $productManager;
     }
 
     /**
      * @param User $user
      * @param Product $product
-     * @param string $count
+     * @param int $amount
      * @throws NonUniqueResultException
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function addBasketProduct(User $user, Product $product, string $count): void
+    public function addBasketProduct(User $user, Product $product, int $amount): void
     {
-        $basket = $this->basketRepository->findActiveUserBasket($user);
-        if ($basket === null) {
-            $basket = $this->basketFactory->create($user);
-            $this->basketRepository->save($basket);
+        $basket = $this->basketManager->getActiveBasket($user);
+        $this->productManager->decreaseProductAmount($product, $amount);
+        $basketProduct = $this->getBasketProduct($product);
+
+        if (null === $basketProduct) {
+            $this->createBasketProduct($basket, $product, $amount);
+
+            return;
         }
-        $basketProduct = $this->basketProductFactory->create($basket, $product, (int)$count);
+
+        $this->updateBasketProduct($basketProduct, $amount);
+    }
+
+    /**
+     * @param Product $product
+     * @return BasketProduct
+     */
+    private function getBasketProduct(Product $product): ?BasketProduct
+    {
+        return $this->basketProductRepository->findOneBy(['product' => $product]);
+    }
+
+    /**
+     * @param Basket $basket
+     * @param Product $product
+     * @param int $count
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function createBasketProduct(Basket $basket, Product $product, int $count): void
+    {
+        $basketProduct = $this->basketProductFactory->create($basket, $product, $count);
         $this->basketProductRepository->save($basketProduct);
-        $product->setAmount($product->getAmount() - (int)$count);
-        $this->productRepository->save($product);
+    }
+
+    /**
+     * @param BasketProduct $basketProduct
+     * @param int $count
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function updateBasketProduct(BasketProduct $basketProduct, int $count): void
+    {
+        $currentBasketProductAmount = $basketProduct->getAmount();
+        $basketProduct->setAmount($currentBasketProductAmount + $count);
+        $basketProduct->setUpdatedAt(new DateTime());
+        $this->basketProductRepository->save($basketProduct);
     }
 
     /**
@@ -88,14 +126,25 @@ class BasketProductManager
 
         foreach ($baskets as $basket) {
             $basket->setDeletedAt(new DateTime());
-            $basketProducts = $basket->getBasketProducts();
-            foreach ($basketProducts as $basketProduct) {
-                $product = $basketProduct->getProduct();
-                $basketProductAmount = $basketProduct->getAmount();
-                $productAmount = $product->getAmount();
-                $product->setAmount($productAmount+$basketProductAmount);
-                $this->basketProductRepository->delete($basketProduct);
-            }
+            $this->restoreAllProductInBasket($basket);
         }
     }
+
+    /**
+     * @param Basket $basket
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function restoreAllProductInBasket(Basket $basket): void
+    {
+        $basketProducts = $basket->getBasketProducts();
+
+        foreach ($basketProducts as $basketProduct) {
+            $product = $basketProduct->getProduct();
+            $basketProductAmount = $basketProduct->getAmount();
+            $this->productManager->increaseProductAmount($product, $basketProductAmount);
+            $this->basketProductRepository->delete($basketProduct);
+        }
+    }
+
 }

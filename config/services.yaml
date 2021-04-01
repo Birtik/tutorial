@@ -22,6 +22,7 @@ services:
             - '../src/Tests/'
             - '../src/Event/'
             - '../src/EventSubscriber'
+            - '../src/Model/'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -34,7 +35,6 @@ services:
     App\Service\Email\EmailBuilder:
         arguments:
             $defaultFrom: '%env(MAILER_SENDER)%'
-
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
