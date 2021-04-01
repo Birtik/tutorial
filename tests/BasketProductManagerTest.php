@@ -14,6 +14,7 @@ use App\Repository\ProductRepository;
 use App\Service\BasketManager;
 use App\Service\BasketProductManager;
 use App\Service\ProductManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**s
@@ -21,6 +22,49 @@ use PHPUnit\Framework\TestCase;
  */
 class BasketProductManagerTest extends TestCase
 {
+    /**
+     * @var ProductManager|MockObject
+     */
+    private MockObject $productManagerMock;
+    /**
+     * @var BasketProductFactory|MockObject
+     */
+    private MockObject $basketProductFactoryMock;
+    /**
+     * @var BasketProductRepository|MockObject
+     */
+    private MockObject $basketProductRepositoryMock;
+    /**
+     * @var BasketManager|MockObject
+     */
+    private MockObject $basketManagerMock;
+    /**
+     * @var User|MockObject
+     */
+    private MockObject $userMock;
+    /**
+     * @var Product|MockObject
+     */
+    private MockObject $productMock;
+    /**
+     * @var BasketRepository|MockObject
+     */
+    private MockObject $basketRepositoryMock;
+
+    protected function setUp(): void
+    {
+        $this->productMock = $this->createMock(Product::class);
+        $this->productManagerMock = $this->createMock(ProductManager::class);
+
+        $this->basketProductFactoryMock = $this->createMock(BasketProductFactory::class);
+        $this->basketProductRepositoryMock = $this->createMock(BasketProductRepository::class);
+
+        $this->basketManagerMock = $this->createMock(BasketManager::class);
+        $this->basketRepositoryMock = $this->createMock(BasketRepository::class);
+
+        $this->userMock = $this->createMock(User::class);
+    }
+
     public function testAddProductOnNotExistBasketProduct(): void
     {
         $basketRepositoryMock = $this->getMockBuilder(BasketRepository::class)->disableOriginalConstructor()->getMock();
@@ -60,33 +104,23 @@ class BasketProductManagerTest extends TestCase
 
     public function testAddProductOnExistBasketProduct(): void
     {
-        $basketRepositoryMock = $this->getMockBuilder(BasketRepository::class)->disableOriginalConstructor()->getMock();
-        $basketProductRepositoryMock = $this->getMockBuilder(
-            BasketProductRepository::class
-        )->disableOriginalConstructor()->getMock();
-        $productRepositoryMock = $this->getMockBuilder(ProductRepository::class)->disableOriginalConstructor()->getMock(
-        );
-        $productMock = $this->getMockBuilder(Product::class)->getMock();
-        $userMock = $this->getMockBuilder(User::class)->getMock();
+        $basketProduct = $this->createMock(BasketProduct::class);
+        $this->productManagerMock->expects(self::once())->method('decreaseProductAmount');
+        $this->basketManagerMock->expects(self::once())->method('getActiveBasket');
 
-        $basketManager = $this->getMockBuilder(BasketManager::class)->
-        setConstructorArgs([new BasketFactory(), $basketRepositoryMock])
-            ->getMock();
+        $this->basketProductRepositoryMock->expects(self::once())->method('findOneBy')->willReturn($basketProduct);
+        $this->basketProductRepositoryMock->expects(self::once())->method('save');
 
-        $productManagerMock = $this->getMockBuilder(ProductManager::class)->setConstructorArgs(
-            [$productRepositoryMock]
-        )->getMock();
-
-        $basketProduct = BasketProduct::create(new Basket(), $productMock, 3);
-        $basketProductRepositoryMock->expects(self::once())->method('findOneBy')->willReturn($basketProduct);
+        $this->basketProductFactoryMock->expects(self::never())->method('create');
 
         $basketProductManagerTest = new BasketProductManager(
-            $basketRepositoryMock,
-            $basketProductRepositoryMock,
-            new BasketProductFactory(),
-            $basketManager,
-            $productManagerMock
+            $this->basketRepositoryMock,
+            $this->basketProductRepositoryMock,
+            $this->basketProductFactoryMock,
+            $this->basketManagerMock,
+            $this->productManagerMock
         );
-        $basketProductManagerTest->addBasketProduct($userMock, $productMock, 12);
+
+        $basketProductManagerTest->addBasketProduct($this->userMock, $this->productMock, 12);
     }
 }

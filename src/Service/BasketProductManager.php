@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Factory\BasketProductFactory;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
+use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -78,13 +79,22 @@ class BasketProductManager
     }
 
     /**
+     * @param Product $product
+     * @return BasketProduct
+     */
+    private function getBasketProduct(Product $product): ?BasketProduct
+    {
+        return $this->basketProductRepository->findOneBy(['product' => $product]);
+    }
+
+    /**
      * @param Basket $basket
      * @param Product $product
      * @param int $count
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function createBasketProduct(Basket $basket, Product $product, int $count): void
+    private function createBasketProduct(Basket $basket, Product $product, int $count): void
     {
         $basketProduct = $this->basketProductFactory->create($basket, $product, $count);
         $this->basketProductRepository->save($basketProduct);
@@ -96,11 +106,11 @@ class BasketProductManager
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function updateBasketProduct(BasketProduct $basketProduct, int $count): void
+    private function updateBasketProduct(BasketProduct $basketProduct, int $count): void
     {
         $currentBasketProductAmount = $basketProduct->getAmount();
         $basketProduct->setAmount($currentBasketProductAmount + $count);
-        $basketProduct->setUpdatedAt(new \DateTime());
+        $basketProduct->setUpdatedAt(new DateTime());
         $this->basketProductRepository->save($basketProduct);
     }
 
@@ -110,12 +120,12 @@ class BasketProductManager
      */
     public function clearAllUnusedBasket(): void
     {
-        $unacceptableDateTime = new \DateTime();
+        $unacceptableDateTime = new DateTime();
         $unacceptableDateTime->modify('-48 hours');
         $baskets = $this->basketRepository->findAllUnusedBasket($unacceptableDateTime);
 
         foreach ($baskets as $basket) {
-            $basket->setDeletedAt(new \DateTime());
+            $basket->setDeletedAt(new DateTime());
             $this->restoreAllProductInBasket($basket);
         }
     }
@@ -135,15 +145,6 @@ class BasketProductManager
             $this->productManager->increaseProductAmount($product, $basketProductAmount);
             $this->basketProductRepository->delete($basketProduct);
         }
-    }
-
-    /**
-     * @param Product $product
-     * @return BasketProduct
-     */
-    public function getBasketProduct(Product $product): ?BasketProduct
-    {
-        return $this->basketProductRepository->findOneBy(['product' => $product]);
     }
 
 }
