@@ -6,7 +6,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 
-class EmailSender
+class EmailManager implements EmailManagerInterface
 {
     /**
      * @var MailerInterface
@@ -14,11 +14,11 @@ class EmailSender
     private MailerInterface $mailer;
 
     /**
-     * @var EmailBuilder
+     * @var EmailBuilderInterface
      */
-    private EmailBuilder $emailBuilder;
+    private EmailBuilderInterface $emailBuilder;
 
-    public function __construct(MailerInterface $mailer, EmailBuilder $emailBuilder)
+    public function __construct(MailerInterface $mailer, EmailBuilderInterface $emailBuilder)
     {
         $this->mailer = $mailer;
         $this->emailBuilder = $emailBuilder;
@@ -35,12 +35,20 @@ class EmailSender
 
     /**
      * @param string $mailTo
-     * @param string $value
+     * @param string $token
      * @throws TransportExceptionInterface
      */
-    public function sendConfirmationEmail(string $mailTo, string $value): void
+    public function sendConfirmationEmail(string $mailTo, string $token): void
     {
-        $email = $this->emailBuilder->buildConfirmationEmail($mailTo, $value);
+        $email = $this->emailBuilder
+            ->createEmail()
+            ->addTo($mailTo)
+            ->addSubject('Miło Cię powitać!')
+            ->addContext(['token' => $token])
+            ->addHtmlTemplate('registration/email_template.html.twig')
+            ->getEmail()
+        ;
+
         $this->sendMail($email);
     }
 
@@ -50,7 +58,14 @@ class EmailSender
      */
     public function sendDoubleRegistrationAlertEmail(string $mailTo): void
     {
-        $email = $this->emailBuilder->buildRepeatedUserEmail($mailTo);
+        $email = $this->emailBuilder
+            ->createEmail()
+            ->addTo($mailTo)
+            ->addSubject('Ktoś próbował założyć konto na Twój adres email!')
+            ->addHtmlTemplate('registration/email_template_alert.html.twig')
+            ->getEmail()
+        ;
+
         $this->sendMail($email);
     }
 }

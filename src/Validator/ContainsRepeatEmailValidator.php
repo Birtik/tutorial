@@ -3,7 +3,7 @@
 namespace App\Validator;
 
 use App\Repository\UserRepository;
-use App\Service\Email\EmailSender;
+use App\Service\Email\EmailManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -11,16 +11,16 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class ContainsRepeatEmailValidator extends ConstraintValidator
 {
     /**
-     * @var EmailSender
+     * @var EmailManager
      */
-    private EmailSender $emailSender;
+    private EmailManager $emailSender;
 
     /**
      * @var UserRepository
      */
     private UserRepository $userRepository;
 
-    public function __construct(UserRepository $userRepository, EmailSender $emailSender)
+    public function __construct(UserRepository $userRepository, EmailManager $emailSender)
     {
         $this->userRepository = $userRepository;
         $this->emailSender = $emailSender;

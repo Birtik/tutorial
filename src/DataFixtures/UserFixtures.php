@@ -23,6 +23,7 @@ class UserFixtures extends Fixture
         $user->setFirstName('Bartosz');
         $user->setLastName('Widera');
         $user->setEnabled(1);
+        $user->setRoles(['ROLE_ADMIN']);
         $user->setPassword(
             $this->passwordEncoder->encodePassword(
                 $user,

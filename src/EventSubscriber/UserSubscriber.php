@@ -4,24 +4,26 @@ namespace App\EventSubscriber;
 
 use App\Event\UserRegisteredEvent;
 use App\Service\ConfirmationTokenGenerator;
-use App\Service\Email\EmailSender;
+use App\Service\Email\EmailManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class UserSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var EmailSender
+     * @var EmailManagerInterface
      */
-    private EmailSender $emailSender;
+    private EmailManagerInterface $emailManager;
     /**
      * @var ConfirmationTokenGenerator
      */
     private ConfirmationTokenGenerator $confirmationTokenGenerator;
 
-    public function __construct(EmailSender $emailSender, ConfirmationTokenGenerator $confirmationTokenGenerator)
-    {
-        $this->emailSender = $emailSender;
+    public function __construct(
+        EmailManagerInterface $emailManager,
+        ConfirmationTokenGenerator $confirmationTokenGenerator
+    ) {
+        $this->emailManager = $emailManager;
         $this->confirmationTokenGenerator = $confirmationTokenGenerator;
     }
 
@@ -43,6 +45,6 @@ class UserSubscriber implements EventSubscriberInterface
     {
         $user = $event->getUser();
         $token = $this->confirmationTokenGenerator->generateTokenForUser($user);
-        $this->emailSender->sendConfirmationEmail($user->getEmail(), $token->getValue());
+        $this->emailManager->sendConfirmationEmail($user->getEmail(), $token->getValue());
     }
 }
