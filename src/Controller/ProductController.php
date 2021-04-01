@@ -66,7 +66,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/{id}", name="app_product_single")
+     * @Route("/product/{id}", name="app_product_single", methods={"GET","POST"})
      * @param Request $request
      * @param BasketProductManager $basketProductManager
      * @param $id
