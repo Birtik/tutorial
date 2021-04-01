@@ -7,12 +7,14 @@ use App\Entity\BasketProduct;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Factory\BasketProductFactory;
+use App\Model\BasketProductModel;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
 use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\HttpFoundation\Request;
 
 class BasketProductManager
 {

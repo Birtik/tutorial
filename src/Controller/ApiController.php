@@ -67,7 +67,6 @@ class ApiController extends AbstractFOSRestController
 
         $view = $this->view();
         $view->setData($products);
-        $view->setFormat('json');
         $view->getContext()->setGroups(["list_product", "list_category"]);
 
         return $this->handleView($view);
@@ -89,7 +88,6 @@ class ApiController extends AbstractFOSRestController
 
         $view = $this->view();
         $view->setData($categories);
-        $view->setFormat('json');
         $view->getContext()->setGroups(["list_category"]);
 
         return $this->handleView($view);
@@ -115,7 +113,6 @@ class ApiController extends AbstractFOSRestController
 
         $view = $this->view();
         $view->setData($basket);
-        $view->setFormat('json');
         $view->getContext()->setGroups(["basket", "list_product"]);
 
         return $this->handleView($view);
