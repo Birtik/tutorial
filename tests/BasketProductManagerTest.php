@@ -6,15 +6,12 @@ use App\Entity\Basket;
 use App\Entity\BasketProduct;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Factory\BasketFactory;
 use App\Factory\BasketProductFactory;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
-use App\Repository\ProductRepository;
 use App\Service\BasketManager;
 use App\Service\BasketProductManager;
 use App\Service\ProductManager;
-use DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
