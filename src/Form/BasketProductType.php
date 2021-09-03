@@ -29,6 +29,7 @@ class BasketProductType extends AbstractType
         }
     }
 
+
     public function generateSelectChoices(int $limit): array
     {
         $selectChoices = [];

@@ -12,6 +12,7 @@ use App\Repository\BasketRepository;
 use App\Service\BasketManager;
 use App\Service\BasketProductManager;
 use App\Service\ProductManager;
+use App\Service\SerializerManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -53,6 +54,11 @@ class BasketProductManagerTest extends TestCase
      */
     private MockObject $basketMock;
 
+    /**
+     * @var SerializerManager|MockObject
+     */
+    private MockObject $serializerManagerMock;
+
     public function testAddProductOnNotExistBasketProduct(): void
     {
         $this->productManagerMock->expects(self::once())->method('decreaseProductAmount');
@@ -68,7 +74,8 @@ class BasketProductManagerTest extends TestCase
             $this->basketProductRepositoryMock,
             $this->basketProductFactoryMock,
             $this->basketManagerMock,
-            $this->productManagerMock
+            $this->productManagerMock,
+            $this->serializerManagerMock
         );
 
         $basketProductManagerTest->addBasketProduct($this->userMock, $this->productMock, 12);
@@ -91,7 +98,8 @@ class BasketProductManagerTest extends TestCase
             $this->basketProductRepositoryMock,
             $this->basketProductFactoryMock,
             $this->basketManagerMock,
-            $this->productManagerMock
+            $this->productManagerMock,
+            $this->serializerManagerMock
         );
 
         $basketProductManagerTest->addBasketProduct($this->userMock, $this->productMock, 3);
@@ -113,5 +121,7 @@ class BasketProductManagerTest extends TestCase
         $this->basketMock = $this->createMock(Basket::class);
 
         $this->userMock = $this->createMock(User::class);
+
+        $this->serializerManagerMock = $this->createMock(SerializerManager::class);
     }
 }

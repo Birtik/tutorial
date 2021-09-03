@@ -54,7 +54,9 @@ class AppFixtures extends Fixture
                 $faker->sentence(4),
                 $faker->numberBetween(1, 100),
                 '1',
-                $faker->numberBetween(1, 50)
+                $faker->numberBetween(1, 50),
+                ($i % 2 === 0) ? 'https://test-website.com' : null,
+                $faker->numberBetween(0, 10),
             );
             $manager->persist($product);
 

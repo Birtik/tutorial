@@ -36,6 +36,7 @@ class OrderRepository extends ServiceEntityRepository
             ->select('o')
             ->where('o.user = :user')
             ->setParameter('user',$user)
+            ->orderBy('o.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
             ;

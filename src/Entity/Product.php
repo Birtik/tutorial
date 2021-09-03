@@ -60,6 +60,16 @@ class Product
      */
     private int $price;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $affiliationLink;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $affiliationCounter;
+
     public function __construct()
     {
         $this->productOpinion = new ArrayCollection();
@@ -71,7 +81,9 @@ class Product
         string $description,
         int $amount,
         string $icon,
-        int $price
+        int $price,
+        ?string $affiliationLink,
+        int $affiliationCounter
     ): self {
         $obj = new self();
         $obj->category = $category;
@@ -80,6 +92,8 @@ class Product
         $obj->amount = $amount;
         $obj->icon = $icon;
         $obj->price = $price;
+        $obj->affiliationLink = $affiliationLink;
+        $obj->affiliationCounter = $affiliationCounter;
 
         return $obj;
     }
@@ -164,6 +178,30 @@ class Product
     public function setPrice(int $price): self
     {
         $this->price = $price;
+        return $this;
+    }
+
+    public function getAffiliationLink(): ?string
+    {
+        return $this->affiliationLink;
+    }
+
+    public function setAffiliationLink(?string $affiliationLink): self
+    {
+        $this->affiliationLink = $affiliationLink;
+
+        return $this;
+    }
+
+    public function getAffiliationCounter(): int
+    {
+        return $this->affiliationCounter;
+    }
+
+    public function setAffiliationCounter(int $affiliationCounter): self
+    {
+        $this->affiliationCounter = $affiliationCounter;
+
         return $this;
     }
 

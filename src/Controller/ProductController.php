@@ -10,6 +10,7 @@ use App\Model\SearchProductModel;
 use App\Repository\CategoriesRepository;
 use App\Repository\ProductRepository;
 use App\Service\BasketProductManager;
+use App\Service\ProductManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +29,19 @@ class ProductController extends AbstractController
      */
     private CategoriesRepository $categoryRepository;
 
-    public function __construct(ProductRepository $productRepository, CategoriesRepository $categoriesRepository)
-    {
+    /**
+     * @var ProductManager
+     */
+    private ProductManager $productManager;
+
+    public function __construct(
+        ProductRepository $productRepository,
+        CategoriesRepository $categoriesRepository,
+        ProductManager $productManager
+    ) {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoriesRepository;
+        $this->productManager = $productManager;
     }
 
     /**
@@ -77,12 +87,15 @@ class ProductController extends AbstractController
         BasketProductManager $basketProductManager,
         $id
     ): Response {
+
         $product = $this->productRepository->findWithCategory($id);
         $categories = $this->categoryRepository->findAll();
 
         if (null === $product) {
             throw new NotFoundHttpException();
         }
+
+        $this->productManager->checkAffiliationLink($request, $product);
 
         $model = new FormBasketProductModel();
         $form = $this->createForm(BasketProductType::class, $model, ['limit' => $product->getAmount()]);

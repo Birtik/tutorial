@@ -7,6 +7,7 @@ use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductManager
 {
@@ -61,10 +62,29 @@ class ProductManager
     {
         $product = $this->productRepository->find($id);
 
-        if (null === $product){
+        if (null === $product) {
             throw new EntityNotFoundException('Product not found');
         }
 
         return $product;
+    }
+
+    /**
+     * @param Request $request
+     * @param Product $product
+     */
+    public function checkAffiliationLink(Request $request, Product $product): void
+    {
+        $affiliationLink = $request->query->get('affiliation-link');
+
+        if ($affiliationLink === 'test') {
+            $this->incrementAffiliationCounter($product);
+        }
+    }
+
+    public function incrementAffiliationCounter(Product $product): void
+    {
+        $product->setAffiliationCounter($product->getAffiliationCounter() + 1);
+        $this->productRepository->save($product);
     }
 }

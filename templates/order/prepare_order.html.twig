@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello BasketController!{% endblock %}
+{% block body %}
+    <div class="example-wrapper">
+        <h1>Podsumowanie zamówienia</h1>
+        <form action="/submit/order">
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Metoda płatności</label>
+                <select class="form-control" id="exampleFormControlSelect1">
+                    <option>PayPal</option>
+                    <option>Przelew bankowy</option>
+                    <option>BLIK</option>
+                </select>
+            </div><br>
+
+            <div class="row">
+                <div class="col">
+                    <label for="exampleFormControlInput1">Miejscowość</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col">
+                    <label for="exampleFormControlInput1">Kod pocztowy</label>
+                    <input type="text" class="form-control" >
+                </div>
+            </div><br>
+            <div class="row">
+                <div class="col">
+                    <label for="exampleFormControlInput1">Ulica</label>
+                    <input type="text" class="form-control">
+                </div>
+            </div><br>
+            <div class="row">
+                <div class="col">
+                    <label for="exampleFormControlInput1">Numer domu</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col">
+                    <label for="exampleFormControlInput1">Numer lokalu</label>
+                    <input type="text" class="form-control" >
+                </div>
+            </div><br>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Metoda dostawy</label>
+                <select class="form-control" id="exampleFormControlSelect1">
+                    <option>Odbiór w punkcie</option>
+                    <option>Paczkomat</option>
+                    <option>Kurier</option>
+                </select>
+            </div><br>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Dodatkowe uwagi</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+            </div>
+            <br>
+            <a href="{{ path('app_basket') }}"><button type="button" class="btn btn-primary">Wróć do koszyka</button></a>
+            <button type="submit" class="btn btn-primary">Złóż zamówienie</button>
+        </form>
+    </div>
+{% endblock %}

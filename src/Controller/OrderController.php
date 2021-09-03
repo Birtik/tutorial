@@ -78,6 +78,20 @@ class OrderController extends AbstractController
             throw $e;
         }
 
+        $this->addFlash('success','Order has been placed');
+
         return $this->redirectToRoute('app_order_history');
+    }
+
+    /**
+     * * @Route("/prepare/order", name="app_prepare_order")
+     * @return Response
+     */
+    public function prepareOrder(): Response
+    {
+        return $this->render(
+            'order/prepare_order.html.twig',
+            []
+        );
     }
 }

@@ -151,7 +151,7 @@ class ApiController extends AbstractFOSRestController
 
         $view = $this->view();
         $view->setStatusCode(200);
-        $view->setData('Product correctly added to basket');
+        $view->setData(['message' => 'Product correctly added to basket']);
 
         return $this->handleView($view);
     }

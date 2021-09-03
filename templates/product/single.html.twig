@@ -3,8 +3,7 @@
 {% block title %}Hello ProductController!{% endblock %}
 {% block body %}
     <div class="container">
-
-        <div class="row">
+        <div class="row" style="padding-top: 50px">
             <div class="col-4">
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
@@ -24,6 +23,13 @@
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
+                {% if single_product.affiliationLink is not null %}
+                    <a href="{{ single_product.affiliationLink }}">
+                        <div style="text-align: center; padding-top: 30px; width: 400px; height: 100px; border: 1px dotted black;">
+                            Link afiliacyjny
+                        </div>
+                    </a>
+                {% endif %}
             </div>
             <div class="col-8">
                 <p style="font-size: 20px">
